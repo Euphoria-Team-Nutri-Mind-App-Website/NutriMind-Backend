@@ -16,10 +16,14 @@ interface PatientAuthRepositoryInterface
 
     public function logout();
 
-    public function restorePassword(PatientLoginRequest $request);
+    public function generateOTP(Request $request);
+
+    public function resetPassword(Request $request);
 
     public function update(UpdatePatientRequest $request, Patient $patient);
 
     public function handleProviderCallback($provider);
+
+    public function validateProvider($provider);
 
 }

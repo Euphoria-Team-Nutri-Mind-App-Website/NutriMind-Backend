@@ -27,7 +27,7 @@ Route::middleware('auth:doctor')->group(function(){
     Route::get('/doctor/profile',[DoctorAuthenticationController::class,'show']);
     Route::post('/doctor/update-profile',[DoctorAuthenticationController::class,'update']);
     Route::get('/doctor/destroy',[DoctorAuthenticationController::class,'destroy']);
-    Route::post('/doctor/restore-password',[DoctorAuthenticationController::class,'restorePassword']);
+    Route::post('/doctor/reset-password',[DoctorAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
 
@@ -54,7 +54,8 @@ Route::middleware('auth:patient')->group(function(){
     Route::get('/patient/profile',[PatientAuthenticationController::class,'show']);
     Route::post('/patient/update-profile',[PatientAuthenticationController::class,'update']);
     Route::get('/patient/destroy',[PatientAuthenticationController::class,'destroy']);
-    Route::post('/patient/restore-password',[PatientAuthenticationController::class,'restorePassword']);
+    Route::get('/patient/generate-otp',[PatientAuthenticationController::class,'generateOTP']);
+    Route::post('/patient/reset-password',[PatientAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
 

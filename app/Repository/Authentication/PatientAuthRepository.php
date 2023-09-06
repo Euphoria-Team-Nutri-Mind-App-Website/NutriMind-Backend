@@ -20,10 +20,10 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 {
     use ImageTrait;  // Store image
     public function register(Request $request) {
-        
+
         if ($request->hasFile('image')) {
             $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
-        }
+        };
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -100,14 +100,21 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
         }
     }
 
-    public function restorePassword(Request $request){
+    public function generateOTP(Request $request){
         $patient = Patient::where('email',$request->email)->first();
         $patient->generateOtpCode(); //send otp code
+        return response([
+            'OTP-Code' => $patient->verfication_code
+        ]);
+    }
 
-        $patient->notify(new OTP());
+    public function resetPassword(Request $request){
+        $patient = Patient::where('email',$request->email)->first();
+        // $patient->notify(new OTP());
 
         $request->validate([
-            'password' => ['required', 'confirmed','min:8',Password::defaults()]
+            'password' => ['required', 'confirmed','min:8',Password::defaults()],
+            'verfication_code' => 'required',
         ]);
 
         if($request->verfication_code == $patient->verfication_code){
@@ -129,7 +136,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
-        $file_name = $this->saveImage($request->image, 'images/profileImages');
+        $file_name = $this->uploadImage($request->image, 'images/profileImages');
 
         //create Patient
         $patient -> update([
@@ -191,6 +198,16 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
             $patientCreated,
             $token
         ]);
+    }
+
+    public function validateProvider($provider)
+    {
+        if (!in_array($provider, ['facebook', 'apple', 'google'])) {
+            return response([
+                'status' => true,
+                'message' => 'Please login using facebook, apple or google'
+            ]);
+        }
     }
 
 }

@@ -38,8 +38,8 @@ class DoctorAuthenticationController extends Controller
         return $this->doctorAuthRepository->logout();
     }
 
-    public function restorePassword(Request $request){
-        return $this->doctorAuthRepository->restorePassword($request);
+    public function resetPassword(Request $request){
+        return $this->doctorAuthRepository->resetPassword($request);
     }
 
 //------------------------------End Default Authentication Methods----------------------------------//
@@ -69,12 +69,7 @@ class DoctorAuthenticationController extends Controller
 
     protected function validateProvider($provider)
     {
-        if (!in_array($provider, ['facebook', 'apple', 'google'])) {
-            return response([
-                'status' => true,
-                'message' => 'Please login using facebook, apple or google'
-            ]);
-        }
+        return $this->doctorAuthRepository->validateProvider($provider);
     }
 
 //------------------------------End Authentication By Social Network Methods--------------------------------//
