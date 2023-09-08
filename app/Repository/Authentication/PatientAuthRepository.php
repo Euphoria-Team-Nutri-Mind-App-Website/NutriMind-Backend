@@ -20,7 +20,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 {
     use ImageTrait;  // Store image
     public function register(Request $request) {
-        
+
         if ($request->hasFile('image')) {
             $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
         }
@@ -68,7 +68,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
         if (!$patient|| !Hash::check($request->password, $patient->password))
         {
             return response([
-                'status' => true,
+                'status' => false,
                 'message' => 'Email or Password may be wrong, please try again'
             ]);
         }
@@ -129,14 +129,16 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
-        $file_name = $this->saveImage($request->image, 'images/profileImages');
+        if ($request->hasFile('image')) {
+            $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
+        }
 
         //create Patient
         $patient -> update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $file_name,
+            'image' => $imagePath,
         ]);
 
         //create token

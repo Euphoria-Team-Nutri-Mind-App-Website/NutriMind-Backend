@@ -54,7 +54,7 @@ Route::middleware('auth:patient')->group(function(){
     Route::get('/patient/profile',[PatientAuthenticationController::class,'show']);
     Route::post('/patient/update-profile',[PatientAuthenticationController::class,'update']);
     Route::get('/patient/destroy',[PatientAuthenticationController::class,'destroy']);
-    Route::post('/patient/restore-password',[PatientAuthenticationController::class,'restorePassword']);
+    Route::post('/patient/reset-password',[PatientAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
 

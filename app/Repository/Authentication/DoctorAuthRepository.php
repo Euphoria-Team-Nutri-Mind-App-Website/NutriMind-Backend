@@ -24,7 +24,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
     public function register(Request $request) {
 
         if ($request->hasFile('image')) {
-            $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
+            $path = $this->uploadImage($request->file('image'), 'images/profileImages');
         };
 
 
@@ -45,13 +45,13 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $imagePath,
+            'image' => $path,
             'phone' => $request->phone,
             'national_id'=> $request->national_id,
             'qualification' => $request->qualification,
             'experience_years' => $request->experience_years,
             'gender' => $request->gender,
-            'credit_card_numder' => $request->credit_card_numder,
+            'credit_card_number' => $request->credit_card_number,
         ]);
 
         //create token
@@ -73,7 +73,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
         if (!$doctor|| !Hash::check($request->password, $doctor->password))
         {
             return response([
-                'status' => true,
+                'status' => false,
                 'message' => 'Email or Password may be wrong, please try again'
             ]);
         }
