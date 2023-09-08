@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/show-chat-messages', [ChatController::class, 'showMessages']);
     Route::get('/show-chats', [ChatController::class, 'showChats']);
     Route::get('/chats/search', [ChatController::class, 'search']);
+    // Route::get('/send-notification', [ChatController::class, 'sendMessageNotification']);
 
 });
 //--------------------------End Routes for Chat between doctor and patient--------------------------//

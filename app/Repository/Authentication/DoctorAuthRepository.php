@@ -33,6 +33,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.Doctor::class],
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
             'phone' => ['required', 'string'],
+            'price' => ['required', 'integer'],
             'national_id' => ['required', 'string'],
             'qualification' => ['required', 'string'],
             'experience_years' => ['required', 'integer'],
@@ -47,11 +48,12 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'password' => Hash::make($request->password),
             'image' => $imagePath,
             'phone' => $request->phone,
+            'price' => $request->price,
             'national_id'=> $request->national_id,
             'qualification' => $request->qualification,
             'experience_years' => $request->experience_years,
             'gender' => $request->gender,
-            'credit_card_numder' => $request->credit_card_numder,
+            'credit_card_number' => $request->credit_card_number,
         ]);
 
         //create token
@@ -105,7 +107,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
         }
     }
 
-    public function restorePassword(Request $request){
+    public function resetPassword(Request $request){
         $doctor = Doctor::where('email',$request->email)->first();
         $doctor->generateOtpCode(); //send otp code
 
@@ -134,7 +136,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
-        $file_name = $this->saveImage($request->image, 'images/profileImages');
+        $file_name = $this->uploadImage($request->image, 'images/profileImages');
 
         //create Doctor
         $doctor -> update([
@@ -198,6 +200,16 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             $doctorCreated,
             $token
         ]);
+    }
+
+    public function validateProvider($provider)
+    {
+        if (!in_array($provider, ['facebook', 'apple', 'google'])) {
+            return response([
+                'status' => true,
+                'message' => 'Please login using facebook, apple or google'
+            ]);
+        }
     }
 
 }

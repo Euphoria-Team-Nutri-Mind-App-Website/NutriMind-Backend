@@ -36,8 +36,12 @@ class PatientAuthenticationController extends Controller
         return $this->patientAuthRepository->logout();
     }
 
-    public function restorPassword(Request $request){
-        return $this->patientAuthRepository->restorePassword($request);
+    public function generateOTP(Request $request){
+        return $this->patientAuthRepository->generateOTP($request);
+    }
+
+    public function resetPassword(Request $request){
+        return $this->patientAuthRepository->resetPassword($request);
     }
 
 //------------------------------End Default Authentication Methods----------------------------------//
@@ -67,12 +71,7 @@ class PatientAuthenticationController extends Controller
 
     protected function validateProvider($provider)
     {
-        if (!in_array($provider, ['facebook', 'apple', 'google'])) {
-            return response([
-                'status' => true,
-                'message' => 'Please login using facebook, apple or google'
-            ]);
-        }
+        return $this->patientAuthRepository->validateProvider($provider);
     }
 
 //------------------------------End Authentication By Social Network Methods--------------------------------//

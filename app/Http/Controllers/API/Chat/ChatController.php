@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\MessageRequest;
+use Illuminate\Support\Facades\Notification;
 use App\Interfaces\Chats\ChatRepositoryInterface;
+use App\Notifications\NewMessage;
 
 class ChatController extends Controller
 {
@@ -57,6 +59,13 @@ class ChatController extends Controller
             'status' => true,
             $chat
         ]);
-
     }
+
+    // public function sendMessageNotification(Request $request) {
+    //     $receiver = Chat::where('receiver_name', $request->receiver_name);
+    //     Notification::send($receiver,new NewMessage);
+    //     // Notification::send($userSchema, new OffersNotification($offerData));
+    //     dd('notification');
+    // }
+
 }

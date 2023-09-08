@@ -44,7 +44,7 @@ class ChatRepository implements ChatRepositoryInterface
                 'status' => null,
             ]);
 
-            broadcast(new SendMessage($chat))->toOthers();
+            //broadcast(new SendMessage($chat))->toOthers();
 
             return $message;
         }
