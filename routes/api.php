@@ -4,14 +4,11 @@ use App\Http\Controllers\API\DoctorSetTimeController;
 use App\Http\Controllers\API\ReportController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\API\NoteController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\Chat\ChatController;
 use App\Http\Controllers\API\AppointmentController;
-use App\Http\Controllers\API\Patient\QouteController;
 use App\Http\Controllers\API\DoctorWorkTimeController;
 use App\Http\Controllers\API\Patient\PatientController;
-use App\Http\Controllers\API\Patient\QuestionnaireController;
 
 //--------------------------------Routes for patient app features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
@@ -34,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/show-chat-messages', [ChatController::class, 'showMessages']);
     Route::get('/show-chats', [ChatController::class, 'showChats']);
     Route::get('/chats/search', [ChatController::class, 'search']);
+    // Route::get('/send-notification', [ChatController::class, 'sendMessageNotification']);
 
 });
 //--------------------------End Routes for Chat between doctor and patient--------------------------//

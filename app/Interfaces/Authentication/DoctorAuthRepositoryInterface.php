@@ -16,10 +16,12 @@ interface DoctorAuthRepositoryInterface
 
     public function logout();
 
-    public function restorePassword(DoctorLoginRequest $request);
+    public function resetPassword(DoctorLoginRequest $request);
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor);
 
     public function handleProviderCallback($provider);
+
+    public function validateProvider($provider);
 
 }
