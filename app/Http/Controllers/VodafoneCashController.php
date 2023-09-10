@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\VodafoneCashRequest;
+use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\DoctorSetTime;
 use App\Models\VodafoneCash;
 use App\Traits\GeneralTrait;
 use App\Traits\ImageTrait;
@@ -32,6 +34,7 @@ class VodafoneCashController extends Controller
         if (isset($validatedMessage)) {
             return $validatedMessage;
         }
+
         $data=Doctor::where('id',$doctorId)->get([
             'name',
             'rate',
@@ -59,6 +62,34 @@ class VodafoneCashController extends Controller
             ]);
         }
         return $this->returnData('PaymentId',$vodafoneCash->id);
+    }
+    public function accept($appointmentId)
+    {
+        $validatedMessage = $this->verificationId($appointmentId, 'appointments', 'id');
+        if (isset($validatedMessage)) {
+            return $validatedMessage;
+        }
+
+        Appointment::where('id',$appointmentId)->update([
+            'status'=>'Active'
+        ]);
+        return $this->returnSuccess('APpointment activated successfully.');
+    }
+    public function reject($appointmentId)
+    {
+        $validatedMessage = $this->verificationId($appointmentId, 'appointments', 'id');
+        if (isset($validatedMessage)) {
+            return $validatedMessage;
+        }
+
+        Appointment::where('id',$appointmentId)->update([
+            'status'=>'Failed'
+        ]);
+        DoctorSetTime::where('appointment_id',$appointmentId)->update([
+            'status'=>'not set'
+        ]);
+
+        return $this->returnSuccess('APpointment rejected successfully.');
     }
 
     /**

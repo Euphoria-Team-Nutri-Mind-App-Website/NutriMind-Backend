@@ -20,24 +20,19 @@ class AppointmentController extends Controller
     // my scheduale
     public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'doctor_id' => 'required|integer|exists:doctors,id',
-            'date' => 'required|date',
-        ], [
-            'doctor_id.*' => 'You are not authorized to access this information.',
-            'date.required' => 'Please selecet the date.',
-            'date.date' => 'The date format is incorrect.If you think there as something wrong please connect the admins.'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->returnError($validator->errors());
+        $validatedMessage = $this->verificationId($request->doctor_id, 'doctors', 'id');
+        if (isset($validatedMessage)) {
+            return $validatedMessage;
         }
+        date_default_timezone_set('UTC');
+        $date = date('Y-m-d');
 
         $appointments = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
             ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->where('appointments.doctor_id', $request->doctor_id)
-            ->where('date', $request->date)
+            ->where('date', $date)
+            ->where('appointments.status', 'Active')
             ->orderBy('time')
             ->get([
                 'full_name',
@@ -58,25 +53,39 @@ class AppointmentController extends Controller
         }
 
         $doctorWork = DoctorWorkDay::where('doctor_id', $doctorId);
-        $doctorWorkDays = json_decode($doctorWork->get('work_days'), true);
-        $doctorWorkDays = array_column($doctorWorkDays, 'work_days');
+        if (isset($doctorWork) && !empty($doctorWork)) {
+            $doctorWorkDays = json_decode($doctorWork->get('work_days'), true);
+            if (isset($doctorWorkDays)) {
+                $doctorWorkDays = array_column($doctorWorkDays, 'work_days');
+            } else {
+                $doctorWorkDays = [];
+            }
 
-        $timeJson = $doctorWork->first('from_to');
-        $timeData = json_decode($timeJson, true);
+            $timeJson = $doctorWork->first('from_to');
+            $timeData = json_decode($timeJson, true);
 
-        $time = $timeData['from_to'];
-        [$startTime, $finishTime] = explode(' to ', $time);
+            if (isset($timeData['from_to'])) {
+                $time = $timeData['from_to'];
+                [$startTime, $finishTime] = explode(' to ', $time);
 
-        // Convert start time to 24-hour format
-        $startTime = Carbon::parse($startTime)->format('H:i');
+                // Convert start time to 24-hour format
+                $startTime = Carbon::parse($startTime)->format('H:i');
 
-        // Convert finish time to 24-hour format
-        $finishTime = Carbon::parse($finishTime)->format('H:i');
-        $data = [
-            'doctorWorkdays' => $doctorWorkDays,
-            'startTime' => $startTime,
-            'finishTime' => $finishTime
-        ];
+                // Convert finish time to 24-hour format
+                $finishTime = Carbon::parse($finishTime)->format('H:i');
+            } else {
+                $startTime = '';
+                $finishTime = '';
+            }
+
+            $data = [
+                'doctorWorkdays' => $doctorWorkDays,
+                'startTime' => $startTime,
+                'finishTime' => $finishTime
+            ];
+        } else {
+            $data = [];
+        }
 
         return response()->json([
             'success' => true,
@@ -90,13 +99,30 @@ class AppointmentController extends Controller
     {
         $validated = $request->validated();
 
-        Appointment::create($request->only(['full_name','doctor_set_time_id','doctor_id','patient_id']));
-        DoctorsetTime::create($request->only(['date', 'time','status', 'doctor_id']));
+        $doctorsetTime = DoctorsetTime::create($request->only(['date', 'time', 'doctor_id']));
+
+        $appointmentData = $request->only(['full_name', 'doctor_id', 'patient_id', 'payment_method']);
+        $appointmentData['doctor_set_time_id'] = $doctorsetTime->id;
+
+        if ($request->has('stripe_id')) {
+            $appointmentData['stripe_id'] = $request->stripe_id;
+        } else {
+            $appointmentData['stripe_id'] = null;
+        }
+
+        if ($request->has('vodafone_cash_id')) {
+            $appointmentData['vodafone_cash_id'] = $request->vodafone_cash_id;
+        } else {
+            $appointmentData['vodafone_cash_id'] = null;
+        }
+
+        Appointment::create($appointmentData);
+
         Patient::where('id', $request->patient_id)->update([
             'age' => $request->age
         ]);
 
-        return $this->returnSuccess('Appointemnt added successfully.');
+        return $this->returnSuccess('Appointment added successfully.');
     }
 
     public function patient_info($patientId)

@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
 
 //--------------------------------Routes for doctor app features--------------------------------//
 Route::middleware('auth:doctor')->group(function () {
-    Route::resource('doctor_work_times', DoctorWorkTimeController::class);
     Route::resource('reports', ReportController::class);
     Route::resource('appointment', AppointmentController::class)->except(['store']);
     Route::get('patient_info/{appointment_id}', [AppointmentController::class, 'patient_info']);

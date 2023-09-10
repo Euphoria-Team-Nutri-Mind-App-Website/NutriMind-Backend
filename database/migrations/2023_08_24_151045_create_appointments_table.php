@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('payment_type');
             $table->foreignId('vodafone_cash_id')->constrained()->cascadeOnDelete()->nullable();
             $table->foreignId('stripe_id')->constrained()->cascadeOnDelete()->nullable();
-            $table->enum('satus', ['Active', 'Pending', 'Failed'])->default('Pending');
+            $table->enum('status', ['Active', 'Pending', 'Failed'])->default('Pending');
             $table->timestamps();
         });
     }

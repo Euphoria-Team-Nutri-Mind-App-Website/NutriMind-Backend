@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->time('time');
-            $table->enum('status',['set','not set'])->default('not set');
+            $table->enum('status',['set','not set'])->default('set');
             $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
