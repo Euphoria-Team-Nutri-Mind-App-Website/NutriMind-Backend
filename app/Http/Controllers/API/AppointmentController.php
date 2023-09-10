@@ -47,6 +47,12 @@ class AppointmentController extends Controller
         return $this->returnData('appointments', $appointments);
     }
 
+    // request contains only doctor id and patient id
+    public function create_appointment(Request $request)
+    {
+        
+    }
+
 
     // book an appointment
     public function store(AppointmentRequest $request)
