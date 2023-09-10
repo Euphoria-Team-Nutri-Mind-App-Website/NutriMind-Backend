@@ -9,11 +9,9 @@ use App\Http\Controllers\API\Chat\ChatController;
 use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\DoctorWorkTimeController;
 use App\Http\Controllers\API\Patient\PatientController;
-<<<<<<< HEAD
-=======
 use App\Http\Controllers\HelpSupportController;
-use App\Http\Controllers\API\SuggestedMealController;
->>>>>>> 8e171217acf621a6d67f21f019f5e95d110cbb97
+use App\Http\Controllers\VodafoneCashController;
+use App\Models\VodafoneCash;
 
 //--------------------------------Routes for patient app features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
@@ -23,7 +21,8 @@ Route::middleware('auth:patient')->group(function () {
     Route::post('/track-weight', [PatientController::class, 'trackWeight']);
     Route::resource('doctor_set_times', DoctorSetTimeController::class); //Patient chooses session time
     Route::resource('payment', PaymentController::class);
-    Route::resource('appointment', AppointmentController::class)->only([ 'store']);;
+    Route::resource('appointment', AppointmentController::class)->only([ 'store']);
+    Route::post('vodafone_cash',[VodafoneCashController::class,'store']);
 });
 //------------------------------End Routes for patient app features------------------------------//
 
@@ -44,12 +43,16 @@ Route::middleware('auth')->group(function () {
 
 
 
-//--------------------------------Routes for docotr app features--------------------------------//
+//--------------------------------Routes for doctor app features--------------------------------//
 Route::middleware('auth:doctor')->group(function () {
     Route::resource('doctor_work_times', DoctorWorkTimeController::class);
     Route::resource('reports', ReportController::class);
     Route::resource('appointment', AppointmentController::class)->except(['store']);
     Route::get('patient_info/{appointment_id}', [AppointmentController::class, 'patient_info']);
+    Route::get('vodafone_cash',[VodafoneCashController::class,'index']);
+    Route::get('view_payment_steps/{doctor_id}',[VodafoneCashController::class,'view_payment_steps']);
+
 });
 //------------------------------End Routes for doctor app features------------------------------//
 
+Route::get('doctor_work_days_time/{doctor_id}',[AppointmentController::class,'doctor_work_days_time']);
