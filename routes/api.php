@@ -10,6 +10,7 @@ use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\DoctorWorkTimeController;
 use App\Http\Controllers\API\Patient\PatientController;
 use App\Http\Controllers\HelpSupportController;
+use App\Http\Controllers\API\SuggestedMealController;
 
 //--------------------------------Routes for patient app features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
@@ -21,6 +22,7 @@ Route::middleware('auth:patient')->group(function () {
     Route::resource('payment', PaymentController::class);
     Route::resource('appointment', AppointmentController::class)->only([ 'store']);;
     Route::resource('reviews', ReviewController::class);
+    Route::resource('suggested_meals', SuggestedMealController::class);
 });
 //------------------------------End Routes for patient app features------------------------------//
 

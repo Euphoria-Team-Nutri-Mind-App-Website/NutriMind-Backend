@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('suggested_meals', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('details');
             $table->integer('calories');
             $table->integer('protein');
             $table->integer('fats');

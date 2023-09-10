@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class SuggestedMeal extends Model
 {
     use HasFactory;
-    protected $fillable=['name','calories','protein','fats','carbs','image'];
+    protected $fillable=['name','calories','protein','fats','carbs','image','details'];
 
     public function patinetSuggestedMeals(): HasMany
     {

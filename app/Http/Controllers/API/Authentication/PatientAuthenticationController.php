@@ -13,7 +13,6 @@ use App\Interfaces\Authentication\PatientAuthRepositoryInterface;
 
 class PatientAuthenticationController extends Controller
 {
-
     private $patientAuthRepository;
 
     public function __construct(PatientAuthRepositoryInterface $patientAuthRepository)
