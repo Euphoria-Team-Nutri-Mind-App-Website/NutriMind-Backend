@@ -27,6 +27,18 @@ class PatientAuthenticationController extends Controller
         return $this->patientAuthRepository->register($request);
     }
 
+    public function getWeight(Request $request) {
+        return $this->patientAuthRepository->getWeight($request);
+    }
+
+    public function getHeight(Request $request) {
+        return $this->patientAuthRepository->getHeight($request);
+    }
+
+    public function getActiveStatus(Request $request) {
+        return $this->patientAuthRepository->getActiveStatus($request);
+    }
+
     public function login(PatientLoginRequest $request) {
         return $this->patientAuthRepository->login($request);
     }
@@ -82,13 +94,13 @@ class PatientAuthenticationController extends Controller
 
 //------------------------------Profile Methods--------------------------------//
 
-    public function show() {
-        $patient = Patient::where('id' , Auth::id())->first();
-        return response([
-            'status' => true,
-            $patient
-        ]);
-    }
+public function show() {
+    $patient = Patient::where('id' , Auth::id())->get(['name','email','image']);
+    return response([
+        'status' => true,
+        'patient information' => $patient
+    ]);
+}
 
     public function update(UpdatePatientRequest $request, Patient $patient)
     {

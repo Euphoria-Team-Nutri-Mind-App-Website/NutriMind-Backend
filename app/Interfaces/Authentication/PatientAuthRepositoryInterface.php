@@ -12,6 +12,12 @@ interface PatientAuthRepositoryInterface
 {
     public function register(Request $request);
 
+    public function getWeight(Request $request);
+    
+    public function getHeight(Request $request);
+
+    public function getActiveStatus(Request $request);
+
     public function login(PatientLoginRequest $request);
 
     public function logout();

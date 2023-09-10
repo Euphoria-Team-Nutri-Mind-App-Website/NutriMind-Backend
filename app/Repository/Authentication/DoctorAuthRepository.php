@@ -15,18 +15,13 @@ use GuzzleHttp\Exception\ClientException;
 use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Interfaces\Authentication\DoctorAuthRepositoryInterface;
-
+use App\Models\DoctorWorkDay;
 
 class DoctorAuthRepository implements DoctorAuthRepositoryInterface
 {
     use ImageTrait;  // Store image
 
     public function register(Request $request) {
-
-        if ($request->hasFile('image')) {
-            $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
-        };
-
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -38,7 +33,8 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'qualification' => ['required', 'string'],
             'experience_years' => ['required', 'integer'],
             'gender' => ['required', 'string'],
-            'credit_card_number' => ['required', 'integer'],
+            'credit_card_number' => ['string'],
+            'vodafone_cash' => ['string'],
         ]);
 
         //create doctor
@@ -46,7 +42,6 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $imagePath,
             'phone' => $request->phone,
             'price' => $request->price,
             'national_id'=> $request->national_id,
@@ -54,6 +49,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'experience_years' => $request->experience_years,
             'gender' => $request->gender,
             'credit_card_number' => $request->credit_card_number,
+            'vodafone_cash' => $request->vodafone_cash,
         ]);
 
         //create token
@@ -67,6 +63,35 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
         ]);
     }
 
+    public function setWorkTime(Request $request) {
+        $request->validate([
+            'work_days' => ['required', 'array'], // ensure work_days is an array
+            'work_days.*' => ['required'], // validate each value in the array
+            'from_to' => ['required'],
+        ]);
+
+        // Create an array to store the day-time pairs
+        $workDays = [];
+
+        foreach ($request->work_days as $workDay) {
+            $workDay = DoctorWorkDay::create([
+                'doctor_id' => Auth::user()->id,
+                'work_days' => $workDay,
+                'from_to' => $request->from_to,
+            ]);
+
+            $workDays[] = [
+                'day' => $workDay->work_days,
+                'time' => $workDay->from_to,
+            ];
+        }
+
+        return response([
+            'status' => true,
+            'work_days' => $workDays,
+        ]);
+    }
+
     public function login(DoctorLoginRequest $request) {
 
         $doctor = Doctor::where('email' , $request->email)->first();
@@ -75,7 +100,7 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
         if (!$doctor|| !Hash::check($request->password, $doctor->password))
         {
             return response([
-                'status' => true,
+                'status' => false,
                 'message' => 'Email or Password may be wrong, please try again'
             ]);
         }
@@ -107,14 +132,21 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
         }
     }
 
-    public function resetPassword(Request $request){
+    public function generateOTP(Request $request){
         $doctor = Doctor::where('email',$request->email)->first();
         $doctor->generateOtpCode(); //send otp code
-
         $doctor->notify(new OTP());
+        return response([
+            'OTP-Code' => $doctor->verfication_code
+        ]);
+    }
+
+    public function resetPassword(Request $request){
+        $doctor = Doctor::where('email',$request->email)->first();
 
         $request->validate([
-            'password' => ['required', 'confirmed','min:8',Password::defaults()]
+            'password' => ['required', 'confirmed','min:8',Password::defaults()],
+            'verfication_code' => 'required',
         ]);
 
         if($request->verfication_code == $doctor->verfication_code){
@@ -136,14 +168,16 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
-        $file_name = $this->uploadImage($request->image, 'images/profileImages');
+        if ($request->hasFile('image')) {
+            $path = $this->uploadImage($request->file('image'), 'images/profileImages');
+        };
 
         //create Doctor
         $doctor -> update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $file_name,
+            'image' => $path,
             'phone' => $request->phone,
         ]);
 

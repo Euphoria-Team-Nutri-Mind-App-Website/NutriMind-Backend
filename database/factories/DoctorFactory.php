@@ -25,7 +25,7 @@ class DoctorFactory extends Factory
             'national_id' => fake()->phoneNumber(),
             'experience_years' => fake()->randomElement([1,2,3,4,5]),
             'rate' => fake()->randomElement([1,2,3,4,5]),
-            'pric' => fake()->randomElement([100,250,300,240,255]),
+            'price' => fake()->randomElement([100,250,300,240,255]),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'credit_card_number' => fake()->phoneNumber(),
         ];

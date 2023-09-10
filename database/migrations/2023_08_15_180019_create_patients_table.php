@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('image')->default('profile.png');
             $table->enum('gender',['male','female'])->default('male');
-            $table->string('credit_card_number');
             $table->integer('age');
-            $table->integer('height');
-            $table->integer('weight');
-            $table->enum('active_status',['Idle','Slack','Active sometimes','Very active']);
+            $table->integer('height')->nullable();
+            $table->integer('current_weight')->nullable();
+            $table->integer('first_weight')->nullable();
+            $table->enum('active_status',['Idle','Slack','Active sometimes','Very active'])->nullable();
             $table->integer('calories')->nullable();
             $table->string('verfication_code')->nullable();
             $table->dateTime('expire_at')->nullable();

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('national_id');
-            $table->string('credit_card_number');
+            $table->string('credit_card_number')->nullable();
+            $table->string('vodafone_cash')->nullable();
             $table->enum('gender',['male','female'])->default('male');
             $table->string('image')->default('profile.png');
             $table->string('qualification');
