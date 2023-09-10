@@ -29,6 +29,10 @@ class DoctorAuthenticationController extends Controller
         return $this->doctorAuthRepository->register($request);
     }
 
+    public function setWorkTime(Request $request) {
+        return $this->doctorAuthRepository->setWorkTime($request);
+    }
+
     public function login(DoctorLoginRequest $request) {
 
         return $this->doctorAuthRepository->login($request);
@@ -36,6 +40,10 @@ class DoctorAuthenticationController extends Controller
 
     public function logout() {
         return $this->doctorAuthRepository->logout();
+    }
+
+    public function generateOTP(Request $request){
+        return $this->doctorAuthRepository->generateOTP($request);
     }
 
     public function resetPassword(Request $request){
@@ -82,14 +90,13 @@ class DoctorAuthenticationController extends Controller
 
 //------------------------------Profile Methods--------------------------------//
 
-    public function show() {
-        $doctor = Doctor::where('id' , Auth::id())->first();
-        return response([
-            'status' => true,
-            $doctor
-        ]);
-
-    }
+public function show() {
+    $doctor = Doctor::where('id' , Auth::id())->get(['name','email','image','national_id']);
+    return response([
+        'status' => true,
+        'doctor information' => $doctor
+    ]);
+}
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {

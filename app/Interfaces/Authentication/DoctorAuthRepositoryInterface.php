@@ -12,11 +12,15 @@ interface DoctorAuthRepositoryInterface
 {
     public function register(Request $request);
 
+    public function setWorkTime(Request $request);
+
     public function login(DoctorLoginRequest $request);
 
     public function logout();
 
-    public function resetPassword(DoctorLoginRequest $request);
+    public function generateOTP(Request $request);
+
+    public function resetPassword(Request $request);
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor);
 

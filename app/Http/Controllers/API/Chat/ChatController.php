@@ -53,6 +53,7 @@ class ChatController extends Controller
     public function search(Request $request){
         $filter = $request->receiver_name;
         $chat = Chat::query()
+            ->where('sender_name',Auth::user()->name)
             ->where('receiver_name', 'LIKE', "%{$filter}%")
             ->get();
         return response([

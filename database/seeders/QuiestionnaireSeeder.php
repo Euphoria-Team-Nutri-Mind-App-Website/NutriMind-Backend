@@ -25,15 +25,11 @@ class QuiestionnaireSeeder extends Seeder
                 'options' => json_encode(['Yes', 'No', 'Yes, but want to change']),
             ],
             [
-                'type' => 'written',
-                'question' => 'What is your weight today? Are you satisfied with it?',
-                'options' => null,
+                'question' => 'Are your fitness in good state? Are you doing practice continuously',
+                'type' => 'options',
+                'options' => json_encode(['Yes', 'No', 'Yes, but not regularly']),
             ],
-            [
-                'type' => 'written',
-                'question' => 'Tell me things made you bad or eating more today',
-                'options' => null,
-            ],
+
         ]);
     }
 }

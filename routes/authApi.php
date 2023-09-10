@@ -23,10 +23,12 @@ Route::get('/login/{provider}/callback', [DoctorAuthenticationController::class,
 
 
 Route::middleware('auth:doctor')->group(function(){
+    Route::post('/doctor/work-days',[DoctorAuthenticationController::class,'setWorkTime']);
     Route::get('/doctor/logout',[DoctorAuthenticationController::class,'logout']);
     Route::get('/doctor/profile',[DoctorAuthenticationController::class,'show']);
     Route::post('/doctor/update-profile',[DoctorAuthenticationController::class,'update']);
     Route::get('/doctor/destroy',[DoctorAuthenticationController::class,'destroy']);
+    Route::get('/doctor/generate-otp',[DoctorAuthenticationController::class,'generateOTP']);
     Route::post('/doctor/reset-password',[DoctorAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
@@ -50,6 +52,9 @@ Route::get('/login/{provider}/callback', [PatientAuthenticationController::class
 
 
 Route::middleware('auth:patient')->group(function(){
+    Route::post('/patient/weight',[PatientAuthenticationController::class,'getWeight']);
+    Route::post('/patient/height',[PatientAuthenticationController::class,'getHeight']);
+    Route::post('/patient/active-status',[PatientAuthenticationController::class,'getActiveStatus']);
     Route::get('/patient/logout',[PatientAuthenticationController::class,'logout']);
     Route::get('/patient/profile',[PatientAuthenticationController::class,'show']);
     Route::post('/patient/update-profile',[PatientAuthenticationController::class,'update']);

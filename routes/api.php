@@ -9,12 +9,14 @@ use App\Http\Controllers\API\Chat\ChatController;
 use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\DoctorWorkTimeController;
 use App\Http\Controllers\API\Patient\PatientController;
+use App\Http\Controllers\HelpSupportController;
 
 //--------------------------------Routes for patient app features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
     Route::get('/doctors', [PatientController::class, 'index'])->name('display_doctors');
     Route::get('/doctor/{id}', [PatientController::class, 'show'])->name('doctor_profile');
     Route::get('/doctors/search', [PatientController::class, 'search'])->name('find_doctor');
+    Route::post('/track-weight', [PatientController::class, 'trackWeight']);
     Route::resource('doctor_set_times', DoctorSetTimeController::class); //Patient chooses session time
     Route::resource('payment', PaymentController::class);
     Route::resource('appointment', AppointmentController::class)->only([ 'store']);;
@@ -31,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/show-chat-messages', [ChatController::class, 'showMessages']);
     Route::get('/show-chats', [ChatController::class, 'showChats']);
     Route::get('/chats/search', [ChatController::class, 'search']);
+    Route::post('/help-support', [HelpSupportController::class,'sendEmail'])->name('help-support.send');
     // Route::get('/send-notification', [ChatController::class, 'sendMessageNotification']);
 
 });

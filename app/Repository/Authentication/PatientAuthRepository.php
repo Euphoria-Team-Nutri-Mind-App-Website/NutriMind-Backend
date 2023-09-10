@@ -21,33 +21,20 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
     use ImageTrait;  // Store image
     public function register(Request $request) {
 
-        if ($request->hasFile('image')) {
-            $imagePath = $this->uploadImage($request->file('image'), 'images/profileImages');
-        };
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.Patient::class],
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
-            'height' => ['required','integer'],
-            'weight' => ['required','integer'],
             'age' => ['required','integer'],
             'gender' => ['required', 'string'],
-            'credit_card_number' => ['required', 'string'],
-            'active_status' => ['required'],
         ]);
         //create Patient
         $patient = Patient::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $imagePath,
-            'height' => $request->height,
-            'weight' => $request->weight,
             'age' => $request->age,
             'gender' => $request->gender,
-            'credit_card_number' => $request->credit_card_number,
-            'active_status' => $request->active_status,
         ]);
 
         //create token
@@ -59,6 +46,42 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
             $token,
             $patient,
         ]);
+    }
+
+    public function getWeight(Request $request){
+        $patient = Patient::find(Auth::user()->id);
+
+        $request->validate([
+            'first_weight' => ['required','integer'],
+        ]);
+
+        $first_weight = $request->input('first_weight');
+        $patient->first_weight = $first_weight;
+        $patient->save();
+    }
+
+    public function getHeight(Request $request){
+        $patient = Patient::find(Auth::user()->id);
+
+        $request->validate([
+            'height' => ['required','integer'],
+        ]);
+
+        $height = $request->input('height');
+        $patient->height = $height;
+        $patient->save();
+    }
+
+    public function getActiveStatus(Request $request){
+        $patient = Patient::find(Auth::user()->id);
+
+        $request->validate([
+            'active_status' => ['required','sting'],
+        ]);
+
+        $active_status = $request->input('active_status');
+        $patient->active_status = $active_status;
+        $patient->save();
     }
 
     public function login(PatientLoginRequest $request) {
@@ -103,6 +126,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
     public function generateOTP(Request $request){
         $patient = Patient::where('email',$request->email)->first();
         $patient->generateOtpCode(); //send otp code
+        $patient->notify(new OTP());
         return response([
             'OTP-Code' => $patient->verfication_code
         ]);
@@ -110,7 +134,6 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
     public function resetPassword(Request $request){
         $patient = Patient::where('email',$request->email)->first();
-        // $patient->notify(new OTP());
 
         $request->validate([
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
@@ -136,14 +159,16 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
-        $file_name = $this->saveImage($request->image, 'images/profileImages');
+        if ($request->hasFile('image')) {
+            $path = $this->uploadImage($request->file('image'), 'images/profileImages');
+        }
 
         //create Patient
         $patient -> update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $imagePath,
+            'image' => $path,
         ]);
 
         //create token

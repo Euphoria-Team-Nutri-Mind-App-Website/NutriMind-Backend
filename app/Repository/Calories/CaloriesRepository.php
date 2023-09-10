@@ -11,7 +11,7 @@ class CaloriesRepository implements CaloriesRepositoryInterface
 
         $patient = Patient::find(Auth::user()->id);
         $height = $patient->height;
-        $weight = $patient->weight;
+        $current_weight = $patient->current_weight;
         $age = $patient->age;
         $gender = $patient->gender;
         $active_status = $patient->active_status;
@@ -29,9 +29,9 @@ class CaloriesRepository implements CaloriesRepositoryInterface
 
         // Calculate calories
         if ($gender == 'male') {
-            $calories = (($weight * 10) + ($height * 6.25) - ($age * 5) + 5) * $activity_state;
+            $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) + 5) * $activity_state;
         } else {
-            $calories = (($weight * 10) + ($height * 6.25) - ($age * 5) - 161) * $activity_state;
+            $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) - 161) * $activity_state;
         }
 
         $patient->calories = $calories;
@@ -43,19 +43,20 @@ class CaloriesRepository implements CaloriesRepositoryInterface
             'age' => $age,
             'active_status' => $active_status,
             'height' => $height,
-            'weight' => $weight,
-            'calories' => $calories,
+            'weight' => $current_weight,
+            'calories' => (int) $calories,
         ]);
     }
 
     public function recommendedCalories(){
-        $calories = Patient::find(Auth::user()->id)->value('calories');
+        $calories= Patient::where('id',Auth::user()->id)->value('calories');
         return response([
-            'Your calories' => $calories,
-            'Lose 0.5 Kg'=>'You need'.' '. $calories - 500 . ' ' .'calories per day to lose 0.5 Kg each week',
-            'Lose 1 Kg'=>'You need'.' '. $calories - 1000 . ' ' .'calories per day to lose 1 Kg each week',
-            'Gain 0.5 kg'=>'You need'.' '. $calories + 500 . ' ' .'calories per day to gain 0.5 Kg each week',
-            'Gain 1 Kg'=>'You need'.' '. $calories + 1000 . ' ' .'calories per day to gain 1 Kg each week',
+            'Your calories' => (int) $calories,
+            'Lose 0.5 Kg'=>'You need'.' '.(int) $calories - 500 . ' ' .'calories per day to lose 0.5 Kg each week',
+            'Lose 1 Kg'=>'You need'.' '. (int) $calories - 1000 . ' ' .'calories per day to lose 1 Kg each week',
+            'Gain 0.5 kg'=>'You need'.' '. (int) $calories + 500 . ' ' .'calories per day to gain 0.5 Kg each week',
+            'Gain 1 Kg'=>'You need'.' '. (int) $calories + 1000 . ' ' .'calories per day to gain 1 Kg each week',
         ]);
     }
+
 }
