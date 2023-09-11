@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\DoctorSetTimeController;
 use App\Http\Controllers\API\ReportController;
+use App\Http\Controllers\API\VodafoneCashController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\PaymentController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\API\AppointmentController;
 use App\Http\Controllers\API\DoctorWorkTimeController;
 use App\Http\Controllers\API\Patient\PatientController;
 use App\Http\Controllers\HelpSupportController;
-use App\Http\Controllers\VodafoneCashController;
 use App\Models\VodafoneCash;
 
 //--------------------------------Routes for patient app features--------------------------------//
@@ -19,10 +19,11 @@ Route::middleware('auth:patient')->group(function () {
     Route::get('/doctor/{id}', [PatientController::class, 'show'])->name('doctor_profile');
     Route::get('/doctors/search', [PatientController::class, 'search'])->name('find_doctor');
     Route::post('/track-weight', [PatientController::class, 'trackWeight']);
-    Route::resource('doctor_set_times', DoctorSetTimeController::class); //Patient chooses session time
+    Route::get('doctor_set_times', [AppointmentController::class,'doctor_set_times']); //Patient chooses session time
     Route::resource('payment', PaymentController::class);
-    Route::resource('appointment', AppointmentController::class)->only([ 'store']);
+    Route::resource('appointment', AppointmentController::class)->only([ 'store','doctor_work_days_time','doctor_set_times']);
     Route::post('vodafone_cash',[VodafoneCashController::class,'store']);
+    Route::get('view_report', [ReportController::class,'view_report']);
 });
 //------------------------------End Routes for patient app features------------------------------//
 
@@ -46,7 +47,7 @@ Route::middleware('auth')->group(function () {
 //--------------------------------Routes for doctor app features--------------------------------//
 Route::middleware('auth:doctor')->group(function () {
     Route::resource('reports', ReportController::class);
-    Route::resource('appointment', AppointmentController::class)->except(['store']);
+    Route::resource('appointment', AppointmentController::class)->except(['store','doctor_work_days_time','doctor_set_times']);
     Route::get('patient_info/{appointment_id}', [AppointmentController::class, 'patient_info']);
     Route::get('vodafone_cash',[VodafoneCashController::class,'index']);
     Route::get('view_payment_steps/{doctor_id}',[VodafoneCashController::class,'view_payment_steps']);

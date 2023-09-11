@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\Game;
+use App\Http\Controllers\Controller;
+use App\Models\stripe;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 
-class GameController extends Controller
+class StripeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +35,7 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Game $game)
+    public function show(stripe $stripe)
     {
         //
     }
@@ -43,7 +43,7 @@ class GameController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Game $game)
+    public function edit(stripe $stripe)
     {
         //
     }
@@ -51,7 +51,7 @@ class GameController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Game $game)
+    public function update(Request $request, stripe $stripe)
     {
         //
     }
@@ -59,7 +59,7 @@ class GameController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Game $game)
+    public function destroy(stripe $stripe)
     {
         //
     }

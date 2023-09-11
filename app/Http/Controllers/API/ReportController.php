@@ -7,6 +7,7 @@ use App\Http\Requests\ReportRequest;
 use App\Models\Appointment;
 use App\Models\Report;
 use App\Traits\GeneralTrait;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ReportController extends Controller
@@ -40,7 +41,7 @@ class ReportController extends Controller
     }
 
     // used to see report of specific appointment
-    // report page
+    // report page for doctor
     public function show($appointmentId)
     {
         $validator = Validator::make(['id' => $appointmentId], [
@@ -54,8 +55,8 @@ class ReportController extends Controller
         }
         $report = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
-            ->join('reports', 'appointments.id', '=', 'reports.appointment_id')
-            ->orderBy('date')
+            ->leftjoin('reports', 'appointments.id', '=', 'reports.appointment_id')
+            ->orderByDesc('date')
             ->where('appointments.id', $appointmentId)
             ->first([
                 "full_name",
@@ -66,4 +67,21 @@ class ReportController extends Controller
             ]);
         return $this->returnData('report', $report);
     }
+    public function view_report()
+    {
+        $report = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
+            ->join('patients', 'appointments.patient_id', '=', 'patients.id')
+            ->join('reports', 'appointments.id', '=', 'reports.appointment_id')
+            ->orderByDesc('date')
+            ->where('patients.id', Auth()->user()->id)
+            ->first([
+                "full_name",
+                "age",
+                "diagnosis_of_his_state",
+                "description",
+                "appointment_id"
+            ]);
+        return $this->returnData('report', $report);
+    }
+
 }

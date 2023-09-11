@@ -14,8 +14,8 @@ class ReportRequest extends FormRequest
     public function rules()
     {
         return [
-            'diagnosis_of_his_state' => 'required',
-            'description' => 'required',
+            'diagnosis_of_his_state' => 'required|string|max:255',
+            'description' => 'required|string',
             'appointment_id' => 'required|exists:appointments,id',
         ];
     }
@@ -23,10 +23,12 @@ class ReportRequest extends FormRequest
     public function messages()
     {
         return [
-            'diagnosis_of_his_state.required' => 'Please add the dianosis of his state.',
-            'description.required' => 'Please add description.',
-            'appointment_id.required' => 'You are not authorized to access this information.',
-            'appointment_id.exists' => 'The appointment ID does not exist.',
+            'diagnosis_of_his_state.required' => 'Please add the diagnosis of his state.',
+            'diagnosis_of_his_state.string' => 'The diagnosis must be a string.',
+            'diagnosis_of_his_state.max' => 'The diagnosis must not exceed 255 characters.',
+            'description.required' => 'Please add a description.',
+            'description.string' => 'The description must be a string.',
+            'appointment_id.*' => 'You are not authorized to access that information.',
         ];
     }
 }
