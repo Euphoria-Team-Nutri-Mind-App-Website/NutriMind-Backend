@@ -106,14 +106,10 @@ class AppointmentController extends Controller
 
         if ($request->has('stripe_id')) {
             $appointmentData['stripe_id'] = $request->stripe_id;
-        } else {
-            $appointmentData['stripe_id'] = null;
         }
 
         if ($request->has('vodafone_cash_id')) {
             $appointmentData['vodafone_cash_id'] = $request->vodafone_cash_id;
-        } else {
-            $appointmentData['vodafone_cash_id'] = null;
         }
 
         Appointment::create($appointmentData);

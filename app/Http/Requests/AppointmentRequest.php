@@ -15,51 +15,39 @@ class AppointmentRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
-        $appointmentId = $this->route('appointment') ? $this->route('appointment')->id : null;
-
         return [
-            'full_name' => 'required|string|max:255',
-            'age' => 'required|integer',
-            'doctor_set_time_id' => [
-                'required',
-                'integer',
-                'exists:doctor_set_times,id',
-                $appointmentId ? Rule::unique('appointments', 'doctor_set_time_id')->ignore($appointmentId) : 'unique:appointments,doctor_set_time_id'
-            ],
-            'doctor_id' => 'required|integer|exists:doctors,id',
-            'payment_method' => 'required|string',
-            'stripe_id' => 'nullable|integer|required_without:vodafone_cash_id',
-            'vodafone_cash_id' => 'nullable|integer|required_without:stripe_id',
-            'patient_id' => 'required|integer|exists:patients,id'
+            'date' => 'required|date_format:Y-m-d',
+            'time' => 'required|date_format:H:i',
+            'doctor_id' => 'required|exists:doctors,id',
+            'full_name' => 'required',
+            'patient_id' => 'required|exists:patients,id',
+            'payment_method' => 'required|in:stripe,vodafone_cash',
+            'stripe_id' => 'nullable|required_if:payment_method,stripe',
+            'vodafone_cash_id' => 'nullable|required_if:payment_method,vodafone_cash',
+            'age' => 'required|numeric',
         ];
     }
 
-    public function messages(): array
+    public function messages()
     {
         return [
-            'full_name.required' => 'The full name field is required. Please enter your full name.',
-            'full_name.string' => 'The full name field must be a string. Please enter a valid full name.',
-            'full_name.max' => 'The full name field must be less than or equal to 255 characters. Please enter a shorter full name.',
-            'age.required' => 'The age field is required. Please enter your age.',
-            'age.integer' => 'The age field must be an integer. Please enter a valid age.',
-            'doctor_set_time_id.required' => 'You should choose a time for that appointment.',
-            'doctor_set_time_id.integer' => 'You are not authorized to access this information.',
-            'doctor_set_time_id.exists' => 'You are not authorized to access this information.',
-            'doctor_set_time_id.unique' => 'That time is not available. Please choose a different time.',
-            'doctor_id.required' => 'Please choose the doctor you want to see.',
-            'doctor_id.integer' => 'You are not authorized to access this information.',
-            'doctor_id.exists' => 'You are not authorized to access this information.',
-            'payment_method.required' => 'The payment method field is required. Please enter a payment method.',
-            'payment_method.string' => 'The payment method field must be a string. Please enter a valid payment method.',
-            'stripe_id.integer' => 'The Stripe ID field must be an integer. Please enter a valid Stripe ID.',
-            'stripe_id.required_without' => 'Either the Stripe ID or Vodafone Cash ID must be set.',
-            'vodafone_cash_id.integer' => 'The Vodafone Cash ID field must be an integer. Please enter a valid Vodafone Cash ID.',
-            'vodafone_cash_id.required_without' => 'Either the Stripe ID or Vodafone Cash ID must be set.',
-            'patient_id.required' => 'Please select a patient.',
-            'patient_id.integer' => 'You are not authorized to access this information.',
-            'patient_id.exists' => 'You are not authorized to access this information.',
+            'date.required' => 'The date field is required.',
+            'date.date_format' => 'The date field must be in the format: Y-m-d.',
+            'time.required' => 'The time field is required.',
+            'time.date_format' => 'The time field must be in the format: H:i.',
+            'doctor_id.required' => 'The doctor ID field is required.',
+            'doctor_id.exists' => 'The selected doctor is invalid.',
+            'full_name.required' => 'The full name field is required.',
+            'patient_id.required' => 'The patient ID field is required.',
+            'patient_id.exists' => 'The selected patient is invalid.',
+            'payment_method.required' => 'The payment method field is required.',
+            'payment_method.in' => 'The selected payment method is invalid.',
+            'stripe_id.required_if' => 'The Stripe ID field is required when the payment method is Stripe.',
+            'vodafone_cash_id.required_if' => 'The Vodafone Cash ID field is required when the payment method is Vodafone Cash.',
+            'age.required' => 'The age field is required.',
+            'age.numeric' => 'The age must be a number.',
         ];
     }
 }

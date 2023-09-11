@@ -9,9 +9,6 @@ use App\Models\DoctorSetTime;
 use App\Models\VodafoneCash;
 use App\Traits\GeneralTrait;
 use App\Traits\ImageTrait;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
 class VodafoneCashController extends Controller
 {
     use GeneralTrait,ImageTrait;
@@ -61,7 +58,7 @@ class VodafoneCashController extends Controller
                 'receipt_image' => $imagePath,
             ]);
         }
-        return $this->returnData('PaymentId',$vodafoneCash->id);
+        return $this->returnData('vodafone_cash_id',$vodafoneCash->id);
     }
     public function accept($appointmentId)
     {
@@ -73,7 +70,7 @@ class VodafoneCashController extends Controller
         Appointment::where('id',$appointmentId)->update([
             'status'=>'Active'
         ]);
-        return $this->returnSuccess('APpointment activated successfully.');
+        return $this->returnSuccess('Appointment activated successfully.');
     }
     public function reject($appointmentId)
     {
@@ -89,38 +86,6 @@ class VodafoneCashController extends Controller
             'status'=>'not set'
         ]);
 
-        return $this->returnSuccess('APpointment rejected successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(VodafoneCash $vodafoneCash)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(VodafoneCash $vodafoneCash)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, VodafoneCash $vodafoneCash)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(VodafoneCash $vodafoneCash)
-    {
-        //
+        return $this->returnSuccess('Appointment rejected successfully.');
     }
 }

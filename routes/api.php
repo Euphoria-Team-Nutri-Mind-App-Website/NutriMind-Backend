@@ -50,7 +50,8 @@ Route::middleware('auth:doctor')->group(function () {
     Route::get('patient_info/{appointment_id}', [AppointmentController::class, 'patient_info']);
     Route::get('vodafone_cash',[VodafoneCashController::class,'index']);
     Route::get('view_payment_steps/{doctor_id}',[VodafoneCashController::class,'view_payment_steps']);
-
+    Route::put('accept_appointment/{appointment_id}',[VodafoneCashController::class,'accept']);
+    Route::put('reject_appointment/{appointment_id}',[VodafoneCashController::class,'reject']);
 });
 //------------------------------End Routes for doctor app features------------------------------//
 
