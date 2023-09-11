@@ -51,6 +51,10 @@ class PatientAuthenticationController extends Controller
         return $this->patientAuthRepository->generateOTP($request);
     }
 
+    public function verifyOTP(Request $request){
+        return $this->patientAuthRepository->verifyOTP($request);
+    }
+
     public function resetPassword(Request $request){
         return $this->patientAuthRepository->resetPassword($request);
     }
