@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('doctor_set_times', function (Blueprint $table) {
+        Schema::create('vodafone_cashes', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->time('time');
-            $table->enum('status',['set','not set'])->default('set');
-            $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
+            $table->integer('price');
+            $table->char('patient_phone_number',11);
+            $table->char('doctor_phone_number',11);
+            $table->string('receipt_image');
+            $table->string('email');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctor_set_times');
+        Schema::dropIfExists('vodafone_cashes');
     }
 };
