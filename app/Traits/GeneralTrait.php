@@ -6,6 +6,18 @@ use Illuminate\Support\Facades\Validator;
 
 trait GeneralTrait
 {
+    public function verificationId($id,$tableName,$IdName)
+    {
+        $validator = Validator::make(['id' => $id], [
+            'id' => "required|integer|exists:$tableName,$IdName",
+        ], [
+            'id.*' => 'You are not authorized to access this information.'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->returnError($validator->errors());
+        }
+    }
     public function returnError($msg)
     {
         return response()->json([
@@ -117,15 +129,12 @@ trait GeneralTrait
     }
     public function viewOne($dataId, $model, $tableName, $IdName,$viewOnlyOne=false,$viewOnlyName='',$GetData='*')
     {
-        $validator = Validator::make(['id' => $dataId], [
-            'id' => "required|integer|exists:$tableName,$IdName",
-        ], [
-            'id.*' => 'You are not authorized to access this information.'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->returnError($validator->errors());
+        $validatedMessage=$this->verificationId($dataId,$tableName,$IdName);
+        if(isset($validatedMessage))
+        {
+            return $validatedMessage;
         }
+        
         $data = $model::where($IdName, $dataId);
         if($viewOnlyOne)
         {

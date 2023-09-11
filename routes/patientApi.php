@@ -10,7 +10,6 @@ use App\Http\Controllers\API\NoteController;
 use App\Http\Controllers\API\Patient\QouteController;
 use App\Http\Controllers\API\SuggestedMealController;
 use App\Http\Controllers\API\Patient\PatientController;
-use App\Http\Controllers\API\PatientSuggestedMealController;
 use App\Http\Controllers\API\Patient\QuestionnaireController;
 
 
@@ -19,7 +18,6 @@ Route::middleware('auth:patient')->group(function () {
     Route::get('/calories', [PatientController::class, 'calculate']);
     Route::get('/recommended-calories', [PatientController::class, 'recommendedCalories']);
     Route::resource('meals', MealController::class);
-    Route::resource('patient_suggested_meals', PatientSuggestedMealController::class);
     Route::resource('suggested_meals', SuggestedMealController::class);
 });
 //------------------------------End Routes for patient meals features------------------------------//

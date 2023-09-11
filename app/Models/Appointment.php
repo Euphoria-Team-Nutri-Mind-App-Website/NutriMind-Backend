@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Appointment extends Model
 {
     use HasFactory;
-    protected $fillable=['full_name','age','doctor_set_time_id','doctor_id','payment_id','patient_id'];
+    protected $fillable=['full_name','doctor_set_time_id','doctor_id','patient_id','status','payment_method','vodafone_cash_id','stripe_id'];
 
     public function patient(): BelongsTo
     {
