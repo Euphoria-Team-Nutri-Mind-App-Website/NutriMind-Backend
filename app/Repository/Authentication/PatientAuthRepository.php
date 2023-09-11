@@ -124,12 +124,38 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
     }
 
     public function generateOTP(Request $request){
-        $patient = Patient::where('email',$request->email)->first();
+        $patient = Patient::where('email', $request->email)->first();
+        if (!$patient) {
+            return response([
+                'message' => 'There is no account with this email',
+            ]);
+        }
+
         $patient->generateOtpCode(); //send otp code
         $patient->notify(new OTP());
-        return response([
-            'OTP-Code' => $patient->verfication_code
+            return response([
+                'OTP-Code' => $patient->verfication_code
+            ]);
+    }
+
+    public function verifyOTP(Request $request){
+        $patient = Patient::where('email', $request->email)->first();
+
+        $request->validate([
+            'verfication_code' => 'required',
         ]);
+
+        if ($request->verfication_code == $patient->verfication_code) {
+            return response([
+                'status' => true,
+                'message' => 'Correct verification code',
+            ]);
+        } else {
+            return response([
+                'status' => false,
+                'message' => 'Your verification code is incorrect',
+            ]);
+        }
     }
 
     public function resetPassword(Request $request){
@@ -137,24 +163,16 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
         $request->validate([
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
-            'verfication_code' => 'required',
         ]);
 
-        if($request->verfication_code == $patient->verfication_code){
-            $patient -> update([
-                'password' => Hash::make($request->password),
-            ]);
-            return response([
-                'status' => true,
-                'message' => 'Your password has been changed'
-            ]);
-        }
-        else{
-            return response([
-                'status' => true,
-                'message' => 'Your verification code not correct'
-            ]);
-        }
+        $patient -> update([
+            'password' => Hash::make($request->password),
+            'verfication_code' => null, // Clear the verification code after successful reset
+        ]);
+        return response([
+            'status' => true,
+            'message' => 'Your password has been changed'
+        ]);
     }
 
     public function update(UpdatePatientRequest $request, Patient $patient)

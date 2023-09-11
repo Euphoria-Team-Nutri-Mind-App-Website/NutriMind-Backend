@@ -13,7 +13,9 @@ use App\Http\Controllers\API\Authentication\PatientAuthenticationController;
 //-----------------------------Doctor authentication routes-----------------------------//
 Route::post('/doctor/register',[DoctorAuthenticationController::class,'register']);
 Route::post('/doctor/login',[DoctorAuthenticationController::class,'login']);
-
+Route::get('/doctor/generate-otp',[DoctorAuthenticationController::class,'generateOTP']);
+Route::get('/doctor/verify-otp',[DoctorAuthenticationController::class,'verifyOTP']);
+Route::post('/doctor/reset-password',[DoctorAuthenticationController::class,'resetPassword']);
 
 
 //------- Social Network Authentecation Routes--------//
@@ -28,8 +30,6 @@ Route::middleware('auth:doctor')->group(function(){
     Route::get('/doctor/profile',[DoctorAuthenticationController::class,'show']);
     Route::post('/doctor/update-profile',[DoctorAuthenticationController::class,'update']);
     Route::get('/doctor/destroy',[DoctorAuthenticationController::class,'destroy']);
-    Route::get('/doctor/generate-otp',[DoctorAuthenticationController::class,'generateOTP']);
-    Route::post('/doctor/reset-password',[DoctorAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
 
@@ -41,7 +41,9 @@ Route::middleware('auth:doctor')->group(function(){
 //-----------------------------Patient authentication routes-----------------------------//
 Route::post('/patient/register',[PatientAuthenticationController::class,'register']);
 Route::post('/patient/login',[PatientAuthenticationController::class,'login']);
-
+Route::get('/patient/generate-otp',[PatientAuthenticationController::class,'generateOTP']);
+Route::get('/patient/verify-otp',[PatientAuthenticationController::class,'verifyOTP']);
+Route::post('/patient/reset-password',[PatientAuthenticationController::class,'resetPassword']);
 
 
 //------- Social Network Authentecation Routes--------//
@@ -59,8 +61,6 @@ Route::middleware('auth:patient')->group(function(){
     Route::get('/patient/profile',[PatientAuthenticationController::class,'show']);
     Route::post('/patient/update-profile',[PatientAuthenticationController::class,'update']);
     Route::get('/patient/destroy',[PatientAuthenticationController::class,'destroy']);
-    Route::get('/patient/generate-otp',[PatientAuthenticationController::class,'generateOTP']);
-    Route::post('/patient/reset-password',[PatientAuthenticationController::class,'resetPassword']);
 });
 //--------------------------------------------------------------------------------------//
 

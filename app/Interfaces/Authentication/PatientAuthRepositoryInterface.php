@@ -13,7 +13,7 @@ interface PatientAuthRepositoryInterface
     public function register(Request $request);
 
     public function getWeight(Request $request);
-    
+
     public function getHeight(Request $request);
 
     public function getActiveStatus(Request $request);
@@ -23,6 +23,8 @@ interface PatientAuthRepositoryInterface
     public function logout();
 
     public function generateOTP(Request $request);
+
+    public function verifyOTP(Request $request);
 
     public function resetPassword(Request $request);
 

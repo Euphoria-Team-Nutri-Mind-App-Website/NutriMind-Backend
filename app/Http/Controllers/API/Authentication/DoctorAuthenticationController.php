@@ -46,6 +46,10 @@ class DoctorAuthenticationController extends Controller
         return $this->doctorAuthRepository->generateOTP($request);
     }
 
+    public function verifyOTP(Request $request){
+        return $this->doctorAuthRepository->verifyOTP($request);
+    }
+
     public function resetPassword(Request $request){
         return $this->doctorAuthRepository->resetPassword($request);
     }

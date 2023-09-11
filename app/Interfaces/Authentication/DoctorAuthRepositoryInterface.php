@@ -20,6 +20,8 @@ interface DoctorAuthRepositoryInterface
 
     public function generateOTP(Request $request);
 
+    public function verifyOTP(Request $request);
+
     public function resetPassword(Request $request);
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor);
