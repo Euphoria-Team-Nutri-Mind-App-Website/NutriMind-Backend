@@ -10,23 +10,24 @@ use App\Models\DoctorSetTime;
 use App\Models\VodafoneCash;
 use App\Traits\GeneralTrait;
 use App\Traits\ImageTrait;
+use Illuminate\Support\Facades\Auth;
 
 class VodafoneCashController extends Controller
 {
     use GeneralTrait, ImageTrait;
 
-    // show list for doctor
+    // Show list of Vodafone Cash payments for the current doctor
     public function index()
     {
-        $doctor_id = Auth()->user()->id;
-        $data = VodafoneCash::leftjoin('appointments', 'vodafone_cashes.id', '=', 'payments.id')
-            ->where('doctor_id', $doctor_id)
+        $doctorId = Auth::user()->id;
+        $data = VodafoneCash::leftJoin('appointments', 'vodafone_cashes.id', '=', 'appointments.id')
+            ->where('doctor_id', $doctorId)
             ->where('payment_method', 'vodafone_cash')
             ->get(['price', 'status', 'full_name', 'patient_phone_number', 'receipt_image', 'appointments.id']);
         return $this->returnData('data', $data);
     }
 
-    // steps of vodafone cash
+    // Retrieve payment steps for Vodafone Cash
     public function view_payment_steps($doctorId)
     {
         $validatedMessage = $this->verificationId($doctorId, 'doctors', 'id');
@@ -41,27 +42,27 @@ class VodafoneCashController extends Controller
             'rate',
             'price',
             'image',
-            'vodafone_cash'
+            'vodafone_cash',
         ]);
         return $this->returnData('data', $data);
     }
 
+    // Store a new Vodafone Cash payment
     public function store(VodafoneCashRequest $request)
     {
         $validated = $request->validated();
-        $vodafoneCash = VodafoneCash::create($request->all());
 
-        if ($request->hasFile('receipt_image')) {
-            $imagePath = $this->uploadImage($request->file('receipt_image'), 'images/receipts');
-        }
+        $imagePath = $this->uploadImage($request->file('receipt_image'), 'images/receipts');
 
-        if (isset($imagePath)) {
-            $vodafoneCash->update([
-                'receipt_image' => $imagePath,
-            ]);
-        }
+        $vodafoneCashData = $request->except('receipt_image');
+        $vodafoneCashData['receipt_image'] = $imagePath;
+
+        $vodafoneCash = VodafoneCash::create($vodafoneCashData);
+
         return $this->returnData('vodafone_cash_id', $vodafoneCash->id);
     }
+
+    // Accept an appointment
     public function accept($appointmentId)
     {
         $validatedMessage = $this->verificationId($appointmentId, 'appointments', 'id');
@@ -70,10 +71,13 @@ class VodafoneCashController extends Controller
         }
 
         Appointment::where('id', $appointmentId)->update([
-            'status' => 'Active'
+            'status' => 'Active',
         ]);
+
         return $this->returnSuccess('Appointment activated successfully.');
     }
+
+    // Reject an appointment
     public function reject($appointmentId)
     {
         $validatedMessage = $this->verificationId($appointmentId, 'appointments', 'id');
@@ -82,11 +86,12 @@ class VodafoneCashController extends Controller
         }
 
         Appointment::where('id', $appointmentId)->update([
-            'status' => 'Failed'
+            'status' => 'Failed',
         ]);
+
         DoctorSetTime::join('appointments', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->where('appointments.id', $appointmentId)->update([
-                    'doctor_set_times.status' => 'not set'
+                    'doctor_set_times.status' => 'not set',
                 ]);
 
         return $this->returnSuccess('Appointment rejected successfully.');
