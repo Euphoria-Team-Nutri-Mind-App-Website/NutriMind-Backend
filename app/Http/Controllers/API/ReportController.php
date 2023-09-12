@@ -32,19 +32,6 @@ class ReportController extends Controller
         return $this->returnSuccess('Report added successfully.');
     }
 
-    public function update(ReportRequest $request, $reportId)
-    {
-        $validated = $request->validated();
-        $report = Report::find($reportId);
-
-        if (!$report) {
-            return $this->returnError('Report not found.');
-        }
-
-        $report->update($request->only(['diagnosis_of_his_state', 'description']));
-        return $this->returnSuccess('Report updated successfully.');
-    }
-
     public function show($appointmentId)
     {
         $validator = Validator::make(['id' => $appointmentId], [
