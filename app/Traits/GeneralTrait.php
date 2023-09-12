@@ -39,8 +39,6 @@ trait GeneralTrait
             $key => $value
         ]);
     }
-
-    // i made that because in every controller i need to return data depend on doctor_id or patient_id or both... so i reduce repetation on my code
     public function getData(Request $request, $modelName, $flagDate)
     {
         $queryParams = $request->query();
@@ -112,10 +110,6 @@ trait GeneralTrait
 
         $data = $model::find($dataId);
 
-        if (isset($data->image) && $data->image !== 'images/meals/food.jpg') {
-            $this->deleteImage($data->image);
-        }
-
         $data->delete();
         $lastPosition = strrpos($model, DIRECTORY_SEPARATOR);
         $substring = substr($model, $lastPosition + 1);
@@ -134,7 +128,7 @@ trait GeneralTrait
         {
             return $validatedMessage;
         }
-        
+
         $data = $model::where($IdName, $dataId);
         if($viewOnlyOne)
         {
@@ -144,14 +138,6 @@ trait GeneralTrait
             $data=$data->first($GetData);
         }
         return $this->returnData('data', $data);
-    }
-    public function deleteImage($imagePath)
-    {
-        $publicPath = public_path($imagePath);
-
-        if (file_exists($publicPath)) {
-            unlink($publicPath);
-        }
     }
 }
 ?>
