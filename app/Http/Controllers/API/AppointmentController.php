@@ -11,18 +11,15 @@ use App\Models\Patient;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
     use GeneralTrait;
 
-    // my scheduale
     public function index()
     {
-        date_default_timezone_set('UTC');
-        $date = date('Y-m-d');
+        $date = Carbon::now()->format('Y-m-d');
 
         $appointments = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
@@ -36,8 +33,10 @@ class AppointmentController extends Controller
                 'time',
                 'diagnosis_of_his_state',
                 'description',
-                'patients.id'
+                'patients.id',
+                'appointments.id'
             ]);
+
         return $this->returnData('appointments', $appointments);
     }
 
@@ -48,45 +47,28 @@ class AppointmentController extends Controller
             return $validatedMessage;
         }
 
-        $doctorWork = DoctorWorkDay::where('doctor_id', $doctorId);
-        if (isset($doctorWork) && !empty($doctorWork)) {
-            $doctorWorkDays = json_decode($doctorWork->get('work_days'), true);
-            if (isset($doctorWorkDays)) {
-                $doctorWorkDays = array_column($doctorWorkDays, 'work_days');
-            } else {
-                $doctorWorkDays = [];
-            }
+        $doctorWork = DoctorWorkDay::where('doctor_id', $doctorId)->first();
 
-            $timeJson = $doctorWork->first('from_to');
-            $timeData = json_decode($timeJson, true);
+        $doctorWorkDays = [];
+        $startTime = '';
+        $finishTime = '';
 
-            if (isset($timeData['from_to'])) {
-                $time = $timeData['from_to'];
-                [$startTime, $finishTime] = explode(' to ', $time);
+        if ($doctorWork) {
+            $doctorWorkData = json_decode($doctorWork->work_days, true);
+            $doctorWorkDays = array_column($doctorWorkData, 'work_days');
 
-                // Convert start time to 24-hour format
-                $startTime = Carbon::parse($startTime)->format('H:i');
-
-                // Convert finish time to 24-hour format
-                $finishTime = Carbon::parse($finishTime)->format('H:i');
-            } else {
-                $startTime = '';
-                $finishTime = '';
-            }
-
-            $data = [
-                'doctorWorkdays' => $doctorWorkDays,
-                'startTime' => $startTime,
-                'finishTime' => $finishTime
-            ];
-        } else {
-            $data = [];
+            $timeData = json_decode($doctorWork->from_to, true);
+            $startTime = $timeData['from_to'] ? Carbon::parse($timeData['from_to'])->format('H:i') : '';
+            $finishTime = $timeData['from_to'] ? Carbon::parse($timeData['from_to'])->format('H:i') : '';
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+        $data = [
+            'doctorWorkdays' => $doctorWorkDays,
+            'startTime' => $startTime,
+            'finishTime' => $finishTime
+        ];
+
+        return $this->returnData('data', $data);
     }
 
     public function doctor_set_times(Request $request)
@@ -97,35 +79,25 @@ class AppointmentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
+            return $this->returnError($validator->errors());
         }
 
         $requestedDate = $request->date;
-        $currentDate = Carbon::now()->format('Y-m-d');
+        $currentTime = Carbon::now()->format('H:i:s');
 
-        if ($requestedDate > $currentDate) {
-            $currentTime = Carbon::now()->format('H:i:s');
+        $query = DoctorsetTime::where('doctor_id', $request->doctor_id)
+            ->where('date', $requestedDate)
+            ->where('status', 'set');
 
-            $doctorSetTimes = DoctorsetTime::where('doctor_id', $request->doctor_id)
-                ->where('date', $requestedDate)
-                ->where('status', 'set')
-                ->whereTime('time', '>', $currentTime)
-                ->get();
-        } else {
-            $doctorSetTimes = DoctorsetTime::where('doctor_id', $request->doctor_id)
-                ->where('date', $requestedDate)
-                ->where('status', 'set')
-                ->get();
+        if ($requestedDate <= Carbon::now()->format('Y-m-d')) {
+            $query->whereTime('time', '>', $currentTime);
         }
+
+        $doctorSetTimes = $query->get();
 
         return $this->returnData('doctorSetTimes', $doctorSetTimes);
     }
 
-
-    // book an appointment
     public function store(AppointmentRequest $request)
     {
         $validated = $request->validated();
@@ -162,19 +134,14 @@ class AppointmentController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
+            return $this->returnError($validator->errors());
         }
 
-        $info = [];
-        $info['time'] = $request->time;
-        $info['appointment_id'] = $request->appointment_id;
+        $info = $request->only('time', 'appointment_id');
 
         $patientInfo = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
-            ->leftjoin('reports', 'appointments.id', '=', 'reports.appointment_id')
+            ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->where('patients.id', $request->patient_id)
             ->where('appointments.id', '<>', $request->appointment_id)
             ->orderByDesc('date')
@@ -186,8 +153,9 @@ class AppointmentController extends Controller
                 'description',
             ]);
 
-        if (isset($patientInfo))
+        if ($patientInfo) {
             $info = array_merge($info, $patientInfo->toArray());
+        }
 
         return $this->returnData('info', $info);
     }
