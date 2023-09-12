@@ -14,7 +14,7 @@ class NoteController extends Controller
 
     public function index(Request $request)
     {
-        return $this->getData($request, Note::class, false);
+        return $this->getData($request, Note::class);
     }
 
     public function store(NoteRequest $request)

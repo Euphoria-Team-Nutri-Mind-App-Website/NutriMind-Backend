@@ -35,7 +35,7 @@ trait GeneralTrait
         return $this->createResponse(true, null, [$key => $value]);
     }
 
-    public function getData(Request $request, $modelName, $flagDate)
+    public function getData(Request $request, $modelName, $flagDate=false)
     {
         $queryParams = $request->query();
         $validator = Validator::make($queryParams, $this->getValidationRules($flagDate), $this->getValidationMessages($flagDate));
