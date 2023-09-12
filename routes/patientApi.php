@@ -14,6 +14,7 @@ use App\Http\Controllers\API\SuggestedMealController;
 use App\Http\Controllers\API\Patient\PatientController;
 use App\Http\Controllers\API\Patient\QuestionnaireController;
 use App\Http\Controllers\API\ReviewController;
+use App\Http\Controllers\API\StripeController;
 
 //--------------------------------Routes for patient app features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
@@ -58,5 +59,10 @@ Route::middleware('auth:patient')->group(function () {
 //------------------------------End Routes for patient notes & qoutes and questions features------------------------------//
 
 
+//--------------------------------Routes for stripe-------------------------------//
+Route::/*middleware('auth:patient')->*/name('stripe.')->controller(StripeController::class)->group(function () {
+    Route::get('payment', 'index')->name('index');
+    Route::post('payment', 'store')->name('store');
+});
 
-
+//------------------------------End Routes for stripe------------------------------//

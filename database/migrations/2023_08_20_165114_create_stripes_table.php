@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('stripes', function (Blueprint $table) {
             $table->id();
+            $table->integer('amount');
+            $table->string('payment_intent_id');
+            $table->string('currency');
+            $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

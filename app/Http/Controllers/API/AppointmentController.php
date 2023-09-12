@@ -33,8 +33,8 @@ class AppointmentController extends Controller
                 'time',
                 'diagnosis_of_his_state',
                 'description',
-                'patients.id',
-                'appointments.id'
+                'patients.id as patient_id',
+                'appointments.id as appointment_id'
             ]);
 
         return $this->returnData('appointments', $appointments);
@@ -149,14 +149,13 @@ class AppointmentController extends Controller
         $validator = Validator::make($request->all(), [
             'appointment_id' => 'required|exists:appointments,id',
             'patient_id' => 'required|exists:patients,id',
-            'time' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
             return $this->returnError($validator->errors());
         }
 
-        $info = $request->only('time', 'appointment_id');
+        $info = $request->only('appointment_id');
 
         $patientInfo = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
@@ -166,6 +165,7 @@ class AppointmentController extends Controller
             ->orderByDesc('date')
             ->first([
                 'full_name',
+                'time',
                 'age',
                 'gender',
                 'diagnosis_of_his_state',
