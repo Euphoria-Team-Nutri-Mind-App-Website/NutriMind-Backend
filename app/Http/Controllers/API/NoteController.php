@@ -15,7 +15,7 @@ class NoteController extends Controller
 
     public function index()
     {
-        $notes=Note::where('patient_id',Auth()->user()->id);
+        $notes=Note::where('patient_id',Auth()->user()->id)->get();
         return $this->returnData('notes',$notes);
     }
 
@@ -42,7 +42,7 @@ class NoteController extends Controller
         if (isset($validatedMessage)) {
             return $validatedMessage;
         }
-        
+
         $note=Note::where('id',$noteId)->first();
         if (!empty($request->body)) {
             $note->update([
