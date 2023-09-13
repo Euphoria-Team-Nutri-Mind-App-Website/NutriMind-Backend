@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone');
             $table->string('national_id');
             $table->string('credit_card_number')->nullable();
             $table->string('vodafone_cash')->nullable();
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->string('qualification');
             $table->integer('experience_years');
             $table->integer('price');
-            $table->string('rate')->nullable();
+            $table->integer('rate')->nullable();
             $table->string('verfication_code')->nullable();
             $table->dateTime('expire_at')->nullable();
             $table->string('password');

@@ -26,7 +26,6 @@ class UpdateDoctorRequest extends FormRequest
             'email' => 'required|unique:doctors|email',
             'image' => 'nullable',
             'password' =>'required|min:8',
-            'phone' => 'required',
         ];
     }
 }

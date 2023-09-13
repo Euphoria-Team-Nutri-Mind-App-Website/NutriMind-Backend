@@ -33,7 +33,7 @@ class PatientController extends Controller
 
     //display specific doctor information page when patient click on doctor profile
     public function show($id){
-        $doctor = Doctor::select('name','phone','gender','image',
+        $doctor = Doctor::select('name','gender','image',
         'qualification','experience_years','rate','price')->findOrFail($id);
         return response([
             'status' => true,

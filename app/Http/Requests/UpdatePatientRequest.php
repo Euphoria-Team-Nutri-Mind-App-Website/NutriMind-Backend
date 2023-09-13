@@ -26,7 +26,6 @@ class UpdatePatientRequest extends FormRequest
             'email' => 'required|unique:patients|email',
             'image' => 'nullable',
             'password' =>'required|min:8',
-            'phone' => 'required',
         ];
     }
 }

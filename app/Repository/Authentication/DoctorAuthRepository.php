@@ -27,7 +27,6 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.Doctor::class],
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
-            'phone' => ['required', 'string'],
             'price' => ['required', 'integer'],
             'national_id' => ['required', 'string'],
             'qualification' => ['required', 'string'],
@@ -42,7 +41,6 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'phone' => $request->phone,
             'price' => $request->price,
             'national_id'=> $request->national_id,
             'qualification' => $request->qualification,
@@ -200,7 +198,6 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'image' => $path,
-            'phone' => $request->phone,
         ]);
 
         //create token
