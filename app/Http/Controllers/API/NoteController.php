@@ -35,8 +35,15 @@ class NoteController extends Controller
         return $this->viewOne($noteId, Note::class, 'notes', 'id');
     }
 
-    public function update(Request $request, Note $note)
+    public function update(Request $request, $noteId)
     {
+
+        $validatedMessage = $this->verificationId($noteId, 'notes', 'id');
+        if (isset($validatedMessage)) {
+            return $validatedMessage;
+        }
+        
+        $note=Note::where('id',$noteId)->first();
         if (!empty($request->body)) {
             $note->update([
                 'body' => $request->body,
