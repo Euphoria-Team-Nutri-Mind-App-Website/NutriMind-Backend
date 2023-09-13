@@ -13,9 +13,10 @@ class NoteController extends Controller
 {
     use GeneralTrait;
 
-    public function index(Request $request)
+    public function index()
     {
-        return $this->getData($request, Note::class);
+        $notes=Note::where('patient_id',Auth()->user()->id);
+        return $this->returnData('notes',$notes);
     }
 
     public function store(Request $request)
