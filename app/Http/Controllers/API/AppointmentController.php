@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Appointment;
-use App\Models\DoctorsetTime;
+use App\Models\DoctorSetTime;
 use App\Models\DoctorWorkDay;
 use App\Models\Patient;
 use App\Traits\GeneralTrait;
@@ -85,7 +85,7 @@ class AppointmentController extends Controller
         $requestedDate = $request->date;
         $currentTime = Carbon::now()->format('H:i:s');
 
-        $query = DoctorsetTime::where('doctor_id', $request->doctor_id)
+        $query = DoctorSetTime::where('doctor_id', $request->doctor_id)
             ->where('date', $requestedDate)
             ->where('status', 'set');
 
@@ -93,9 +93,9 @@ class AppointmentController extends Controller
             $query->whereTime('time', '>', $currentTime);
         }
 
-        $doctorSetTimes = $query->get();
+        $DoctorSetTimes = $query->get();
 
-        return $this->returnData('doctorSetTimes', $doctorSetTimes);
+        return $this->returnData('DoctorSetTimes', $DoctorSetTimes);
     }
 
     public function store(AppointmentRequest $request)

@@ -17,7 +17,7 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         if ($request->has('id') && !empty($request->id)) {
-            return $this->viewOne($request->id, 'App\Models\doctor', 'doctors', 'id', true, 'rate');
+            return $this->viewOne($request->id, 'App\Models\Doctor', 'doctors', 'id', true, 'rate');
         }
 
         return $this->returnError('You are not authorized to access this information.');
