@@ -61,11 +61,11 @@ class PatientAuthenticationTest extends TestCase
     }
 
     public function testPatientVerifyOtpSuccess(){
-        $email = 'xkris@example.org';
+        $email = 'jenkins.hoyt@example.net';
         $patient = Patient::where('email', $email)->first();
 
         if ($patient) {
-            $response = $this->get("/patient/api/patient/verify-otp?email=$email&verfication_code=2734");
+            $response = $this->get("/patient/api/patient/verify-otp?email=$email&verfication_code=5592");
             $response->assertStatus(200);
             $response->assertSee('Correct verification code');
         } else {

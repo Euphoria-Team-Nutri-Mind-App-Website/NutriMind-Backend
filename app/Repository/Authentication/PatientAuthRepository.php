@@ -76,7 +76,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
         $patient = Patient::find(Auth::user()->id);
 
         $request->validate([
-            'active_status' => ['required','sting'],
+            'active_status' => ['required','string'],
         ]);
 
         $active_status = $request->input('active_status');

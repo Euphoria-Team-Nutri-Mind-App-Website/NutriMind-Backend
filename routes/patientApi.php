@@ -37,7 +37,6 @@ Route::middleware('auth:patient')->group(function () {
 
 //--------------------------------Routes for patient meals features--------------------------------//
 Route::middleware('auth:patient')->group(function () {
-    Route::get('/calories', [PatientController::class, 'calculate']);
     Route::get('/recommended-calories', [PatientController::class, 'recommendedCalories']);
     Route::resource('meals', MealController::class);
     Route::resource('suggested_meals', SuggestedMealController::class);

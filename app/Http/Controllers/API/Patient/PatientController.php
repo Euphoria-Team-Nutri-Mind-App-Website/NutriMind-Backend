@@ -23,7 +23,7 @@ class PatientController extends Controller
     // display some doctors in user home page
     public function index(){
         $doctors = Doctor::select('name','image',
-        'qualification','rate')->paginate(8);
+        'qualification','rate')->orderBy('rate', 'desc')->paginate(8);
         return response([
             'status' => true,
             'doctor_info' => $doctors

@@ -24,6 +24,7 @@ class PatientFactory extends Factory
             'gender' => fake()->randomElement(['male', 'female']),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'calories' => fake()->randomElement([2006,1592,2173,2687,1255]),
+            'active_status' => fake()->randomElement(['Idle', 'Active Sometimes','Slack','Very active']),
         ];
     }
 }
