@@ -4,7 +4,6 @@ namespace App\Repository\Authentication;
 
 use App\Models\Doctor;
 use App\Notifications\OTP;
-use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +18,6 @@ use App\Models\DoctorWorkDay;
 
 class DoctorAuthRepository implements DoctorAuthRepositoryInterface
 {
-    use ImageTrait;  // Store image
-
     public function register(Request $request) {
 
         $request->validate([
@@ -115,18 +112,22 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
     }
 
     public function logout() {
+        $doctor = Auth::guard('doctor')->user();
 
-        if(Auth::guard('doctor')->check()){
-            $accessToken = Auth::guard('doctor')->user()->token();
+        if ($doctor) {
+            $accessToken = $doctor->token();
 
+            if ($accessToken) {
                 DB::table('oauth_refresh_tokens')
                     ->where('access_token_id', $accessToken->id)
                     ->update(['revoked' => true]);
-            $accessToken->revoke();
-        return response([
-            'status' => true,
-            'mesaage' => 'Logged out sucsessfully'
-        ]);
+
+                $accessToken->revoke();
+            }
+            return response([
+                'status' => true,
+                'message' => 'Logged out successfully',
+            ]);
         }
     }
 
@@ -188,16 +189,11 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
 
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
-        if ($request->hasFile('image')) {
-            $path = $this->uploadImage($request->file('image'), 'images/profileImages');
-        };
-
         //create Doctor
         $doctor -> update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $path,
         ]);
 
         //create token

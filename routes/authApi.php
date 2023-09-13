@@ -4,9 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Authentication\DoctorAuthenticationController;
 use App\Http\Controllers\API\Authentication\PatientAuthenticationController;
-
-
-
+use App\Models\Doctor;
 
 //--------------------------------------------Authentication Routes-----------------------------------------------------//
 

@@ -4,7 +4,6 @@ namespace App\Repository\Authentication;
 
 use App\Models\Patient;
 use App\Notifications\OTP;
-use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +17,6 @@ use App\Interfaces\Authentication\PatientAuthRepositoryInterface;
 
 class PatientAuthRepository implements PatientAuthRepositoryInterface
 {
-    use ImageTrait;  // Store image
     public function register(Request $request) {
 
         $request->validate([
@@ -108,18 +106,22 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
     }
 
     public function logout() {
+        $patient = Auth::guard('patient')->user();
 
-        if(Auth::guard('patient')->check()){
-            $accessToken = Auth::guard('patient')->user()->token();
+        if ($patient) {
+            $accessToken = $patient->token();
 
+            if ($accessToken) {
                 DB::table('oauth_refresh_tokens')
                     ->where('access_token_id', $accessToken->id)
                     ->update(['revoked' => true]);
-            $accessToken->revoke();
-        return response([
-            'status' => true,
-            'mesaage' => 'Logged out sucsessfully'
-        ]);
+
+                $accessToken->revoke();
+            }
+            return response([
+                'status' => true,
+                'message' => 'Logged out successfully',
+            ]);
         }
     }
 
@@ -177,18 +179,12 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
 
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
-        if ($request->hasFile('image')) {
-            $path = $this->uploadImage($request->file('image'), 'images/profileImages');
-        }
-
         //create Patient
         $patient -> update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'image' => $path,
         ]);
-
         //create token
         $token = $patient->createToken('patient_token');
 
