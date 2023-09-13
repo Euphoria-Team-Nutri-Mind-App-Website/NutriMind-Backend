@@ -48,7 +48,7 @@ trait HelperTrait
 
     private function getModelName($model)
     {
-        $lastPosition = strrpos($model, DIRECTORY_SEPARATOR);
+        $lastPosition = strrpos($model, '\\');
         $substring = substr($model, $lastPosition + 1);
         return $substring;
     }

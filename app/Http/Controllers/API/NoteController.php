@@ -7,6 +7,7 @@ use App\Http\Requests\NoteRequest;
 use App\Models\Note;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
@@ -17,25 +18,13 @@ class NoteController extends Controller
         return $this->getData($request, Note::class);
     }
 
-    public function store(NoteRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
-
-        if (!empty($request->title)) {
+        if (!empty($request->body)) {
             Note::create([
-                'title' => $request->title,
                 'body' => $request->body,
-                'patient_id' => $request->patient_id
+                'patient_id' => Auth()->user()->id
             ]);
-
-            return $this->returnSuccess('Note added successfully.');
-        } elseif (!empty($request->body)) {
-            Note::create([
-                'title' => substr($request->body, 0, 255),
-                'body' => $request->body,
-                'patient_id' => $request->patient_id
-            ]);
-
             return $this->returnSuccess('Note added successfully.');
         }
     }
@@ -45,23 +34,11 @@ class NoteController extends Controller
         return $this->viewOne($noteId, Note::class, 'notes', 'id');
     }
 
-    public function update(NoteRequest $request, Note $note)
+    public function update(Request $request, Note $note)
     {
-        $validated = $request->validated();
-
-        if (!empty($request->title)) {
+        if (!empty($request->body)) {
             $note->update([
-                'title' => $request->title,
                 'body' => $request->body,
-                'patient_id' => $request->patient_id
-            ]);
-
-            return $this->returnSuccess('Note updated successfully.');
-        } elseif (!empty($request->body)) {
-            $note->update([
-                'title' => substr($request->body, 0, 255),
-                'body' => $request->body,
-                'patient_id' => $request->patient_id
             ]);
 
             return $this->returnSuccess('Note updated successfully.');
@@ -73,16 +50,12 @@ class NoteController extends Controller
         return $this->destroyData($noteId, 'App\Models\Note', 'notes');
     }
 
-    public function search(NoteRequest $request)
+    public function search(Request $request)
     {
-        $validated = $request->validated();
-
         $bodyFilter = $request->body;
-        $titleFilter = $request->title;
-
         $notes = Note::query()
             ->where('body', 'LIKE', "%{$bodyFilter}%")
-            ->orWhere('title', 'LIKE', "%{$titleFilter}%")
+            ->where('patient_id',Auth()->user()->id)
             ->get();
 
         return $this->returnData('notes', $notes);

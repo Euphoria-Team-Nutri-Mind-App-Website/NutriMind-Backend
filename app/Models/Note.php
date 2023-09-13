@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Note extends Model
 {
     use HasFactory;
-    protected $fillable=['title','body','patient_id'];
+    protected $fillable=['body','patient_id'];
 
     public function patient(){
         return  $this->belongsTo(Patient::class);
