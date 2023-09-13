@@ -12,9 +12,6 @@ use Tests\TestCase;
 
 class NoteControllerTest extends TestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
-
     public function testIndexReturnsAllNotesForPatient()
     {
         $patient = Patient::factory()->create();
