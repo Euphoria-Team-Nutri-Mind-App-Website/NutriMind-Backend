@@ -70,7 +70,7 @@ class NoteController extends Controller
 
     public function destroy($noteId)
     {
-        return $this->destroyData($noteId, Note::class, 'notes');
+        return $this->destroyData($noteId, 'App\Models\Note', 'notes');
     }
 
     public function search(NoteRequest $request)
