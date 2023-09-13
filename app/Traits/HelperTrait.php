@@ -50,8 +50,6 @@ trait HelperTrait
     {
         $lastPosition = strrpos($model, DIRECTORY_SEPARATOR);
         $substring = substr($model, $lastPosition + 1);
-        $substring = preg_replace('/([a-z])([A-Z])/', '$1 $2', $substring);
-        $substring = ucfirst(strtolower($substring));
         return $substring;
     }
 }
