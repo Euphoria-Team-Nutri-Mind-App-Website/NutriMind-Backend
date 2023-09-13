@@ -16,7 +16,7 @@ class QouteController extends Controller
         $quotes = Qoute::inRandomOrder()->limit(10)->get();
         return response([
             'status' => true,
-            $quotes
+            'quotes'=>$quotes
         ]);
     }
 }

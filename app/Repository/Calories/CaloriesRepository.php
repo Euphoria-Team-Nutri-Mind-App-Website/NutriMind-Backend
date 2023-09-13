@@ -11,6 +11,7 @@ class CaloriesRepository implements CaloriesRepositoryInterface
 
         $patient = Patient::find(Auth::user()->id);
         $height = $patient->height;
+        $first_weight = $patient->first_weight;
         $current_weight = $patient->current_weight;
         $age = $patient->age;
         $gender = $patient->gender;
@@ -27,11 +28,22 @@ class CaloriesRepository implements CaloriesRepositoryInterface
             $activity_state = 1.725;
         }
 
-        // Calculate calories
-        if ($gender == 'male') {
-            $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) + 5) * $activity_state;
-        } else {
-            $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) - 161) * $activity_state;
+        if($current_weight !=null){
+            // Calculate calories
+            if ($gender == 'male') {
+                $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) + 5) * $activity_state;
+            } else {
+                $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) - 161) * $activity_state;
+            }
+        }else
+        {
+            $current_weight = $first_weight;
+            // Calculate calories
+            if ($gender == 'male') {
+                $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) + 5) * $activity_state;
+            } else {
+                $calories = (($current_weight * 10) + ($height * 6.25) - ($age * 5) - 161) * $activity_state;
+            }
         }
 
         $patient->calories = $calories;
@@ -49,8 +61,11 @@ class CaloriesRepository implements CaloriesRepositoryInterface
     }
 
     public function recommendedCalories(){
+        $this->calculate();
         $calories= Patient::where('id',Auth::user()->id)->value('calories');
+        $active_status= Patient::where('id',Auth::user()->id)->value('active_status');
         return response([
+            'Your Active Status' => $active_status,
             'Your calories' => (int) $calories,
             'Lose 0.5 Kg'=>'You need'.' '.(int) $calories - 500 . ' ' .'calories per day to lose 0.5 Kg each week',
             'Lose 1 Kg'=>'You need'.' '. (int) $calories - 1000 . ' ' .'calories per day to lose 1 Kg each week',
