@@ -25,7 +25,7 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
             'age' => ['required','integer'],
             'gender' => ['required', 'string'],
-            'credit_card_number' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
+            'credit_card_number' => ['required', 'string'],
             'vodafone_cash' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
         ]);
         //create Patient
