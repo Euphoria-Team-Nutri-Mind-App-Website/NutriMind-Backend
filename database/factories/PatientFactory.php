@@ -26,7 +26,7 @@ class PatientFactory extends Factory
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'calories' => fake()->randomElement([2006,1592,2173,2687,1255]),
             'active_status' => fake()->randomElement(['Idle', 'Active Sometimes','Slack','Very active']),
-            'credit_card_number' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
+            'credit_card_number' => fake()->phoneNumber(),
             'vodafone_cash' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
         ];
     }
