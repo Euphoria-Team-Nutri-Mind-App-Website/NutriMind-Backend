@@ -12,8 +12,8 @@ use Tests\TestCase;
 
 class NoteControllerTest extends TestCase
 {
-    use RefreshDatabase;
-    use WithFaker;
+    // use RefreshDatabase;
+    // use WithFaker;
     private $patient;
     private $noteController;
 
