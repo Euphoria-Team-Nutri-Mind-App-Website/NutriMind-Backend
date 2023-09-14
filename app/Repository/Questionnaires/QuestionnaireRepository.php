@@ -23,8 +23,8 @@ class QuestionnaireRepository implements QuestionnaireRepositoryInterface
                 $answer -> save();
                 return response([
                     'status' => true,
-                    $options,
-                    $answer
+                    'options'=>$options,
+                    'answer'=>$answer
                 ]);
             }
             //-----------------------------------------------------------------------------------//
@@ -38,8 +38,8 @@ class QuestionnaireRepository implements QuestionnaireRepositoryInterface
                     ]);
                 return response([
                     'status' => true,
-                    $options,
-                    $answer
+                    'options'=>$options,
+                    'answer'=>$answer
                 ]);
             //-----------------------------------------------------------------------------------//
         }

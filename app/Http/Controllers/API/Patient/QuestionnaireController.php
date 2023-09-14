@@ -23,7 +23,7 @@ class QuestionnaireController extends Controller
         ->orwhere('type','options')->get();
         return response([
             'status' => true,
-            $questions
+            'questions'=>$questions
         ]);
     }
 

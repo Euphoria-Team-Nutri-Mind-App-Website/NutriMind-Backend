@@ -50,7 +50,7 @@ class PatientController extends Controller
             ->get();
         return response([
             'status' => true,
-            $doctor
+            'doctor'=>$doctor
         ]);
     }
 
