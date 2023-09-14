@@ -85,21 +85,15 @@ class AppointmentController extends Controller
         }
 
         $requestedDate = $request->date;
-        $currentTime = Carbon::now()->format('H:i:s');
 
         $query = DoctorSetTime::where('doctor_id', $request->doctor_id)
             ->where('date', $requestedDate)
             ->where('status', 'set');
 
-        if ($requestedDate <= Carbon::now()->format('Y-m-d')) {
-            $query->whereTime('time', '>', $currentTime);
-        }
-
         $DoctorSetTimes = $query->get();
 
         return $this->returnData('DoctorSetTimes', $DoctorSetTimes);
     }
-
     public function store(AppointmentRequest $request)
     {
         $validated = $request->validated();
@@ -131,6 +125,7 @@ class AppointmentController extends Controller
 
         if ($request->has('stripe_id')) {
             $appointmentData['stripe_id'] = $request->stripe_id;
+            $appointmentData['status'] = "Active";
         }
 
         if ($request->has('vodafone_cash_id')) {
