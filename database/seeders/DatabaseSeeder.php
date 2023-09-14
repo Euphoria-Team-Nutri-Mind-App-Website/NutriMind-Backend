@@ -3,6 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use Database\Seeders\AppointmentsSeeder;
+use Database\Seeders\DoctorSetTimesSeeder;
+use Database\Seeders\DoctorWorkDaysSeeder;
+use Database\Seeders\VodafoneCashesSeeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ChatSeeder;
 use Database\Seeders\QouteSeeder;
@@ -25,6 +30,11 @@ class DatabaseSeeder extends Seeder
             MessageSeeder::class,
             QouteSeeder::class,
             QuiestionnaireSeeder::class,
+            DoctorWorkDaySeeder::class,
+            VodafoneCashSeeder::class,
+            DoctorSetTimeSeeder::class,
+            AppointmentSeeder::class,
+            ReportSeeder::class
         ]);
     }
 }

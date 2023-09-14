@@ -11,6 +11,7 @@ use App\Models\Patient;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
@@ -85,21 +86,15 @@ class AppointmentController extends Controller
         }
 
         $requestedDate = $request->date;
-        $currentTime = Carbon::now()->format('H:i:s');
 
         $query = DoctorSetTime::where('doctor_id', $request->doctor_id)
             ->where('date', $requestedDate)
             ->where('status', 'set');
 
-        if ($requestedDate <= Carbon::now()->format('Y-m-d')) {
-            $query->whereTime('time', '>', $currentTime);
-        }
-
         $DoctorSetTimes = $query->get();
 
         return $this->returnData('DoctorSetTimes', $DoctorSetTimes);
     }
-
     public function store(AppointmentRequest $request)
     {
         $validated = $request->validated();
@@ -131,6 +126,7 @@ class AppointmentController extends Controller
 
         if ($request->has('stripe_id')) {
             $appointmentData['stripe_id'] = $request->stripe_id;
+            $appointmentData['status'] = "Active";
         }
 
         if ($request->has('vodafone_cash_id')) {
@@ -164,6 +160,7 @@ class AppointmentController extends Controller
             ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->where('patients.id', $request->patient_id)
             ->where('appointments.id', '<>', $request->appointment_id)
+            ->where('appointments.doctor_id', Auth()->user()->id)
             ->orderByDesc('date')
             ->first([
                 'full_name',

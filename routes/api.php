@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:doctor')->group(function () {
     Route::resource('reports', ReportController::class);
     Route::get('appointment',[ AppointmentController::class,'index']);
-    Route::get('patient_info/{appointment_id}', [AppointmentController::class, 'patient_info']);
+    Route::get('patient_info', [AppointmentController::class, 'patient_info']);
     Route::get('vodafone_cash',[VodafoneCashController::class,'index']);
     Route::put('accept_appointment/{appointment_id}',[VodafoneCashController::class,'accept']);
     Route::put('reject_appointment/{appointment_id}',[VodafoneCashController::class,'reject']);
