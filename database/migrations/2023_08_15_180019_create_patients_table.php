@@ -24,6 +24,8 @@ return new class extends Migration
             $table->enum('active_status',['Idle','Slack','Active sometimes','Very active'])->nullable();
             $table->integer('calories')->nullable();
             $table->string('verfication_code')->nullable();
+            $table->string('credit_card_number')->nullable();
+            $table->string('vodafone_cash')->nullable();
             $table->dateTime('expire_at')->nullable();
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();

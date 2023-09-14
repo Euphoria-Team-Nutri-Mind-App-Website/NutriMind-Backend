@@ -29,8 +29,8 @@ class DoctorAuthRepository implements DoctorAuthRepositoryInterface
             'qualification' => ['required', 'string'],
             'experience_years' => ['required', 'integer'],
             'gender' => ['required', 'string'],
-            'credit_card_number' => ['string'],
-            'vodafone_cash' => ['string'],
+            'credit_card_number' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
+            'vodafone_cash' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
         ]);
 
         //create doctor

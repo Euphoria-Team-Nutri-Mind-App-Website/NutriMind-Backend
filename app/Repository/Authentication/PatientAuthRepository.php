@@ -25,6 +25,8 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
             'password' => ['required', 'confirmed','min:8',Password::defaults()],
             'age' => ['required','integer'],
             'gender' => ['required', 'string'],
+            'credit_card_number' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
+            'vodafone_cash' => ['required', 'digits:11', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
         ]);
         //create Patient
         $patient = Patient::create([
@@ -33,6 +35,8 @@ class PatientAuthRepository implements PatientAuthRepositoryInterface
             'password' => Hash::make($request->password),
             'age' => $request->age,
             'gender' => $request->gender,
+            'credit_card_number' => $request->credit_card_number,
+            'vodafone_cash' => $request->vodafone_cash,
         ]);
 
         //create token
