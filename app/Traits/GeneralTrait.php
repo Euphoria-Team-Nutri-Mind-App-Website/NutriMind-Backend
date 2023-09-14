@@ -35,7 +35,7 @@ trait GeneralTrait
         return $this->createResponse(true, null, [$key => $value]);
     }
 
-    public function getData(Request $request, $modelName, $flagDate=false)
+    public function getData(Request $request, $modelName, $flagDate = false)
     {
         $queryParams = $request->query();
         $validator = Validator::make($queryParams, $this->getValidationRules($flagDate), $this->getValidationMessages($flagDate));
@@ -66,6 +66,7 @@ trait GeneralTrait
         return $this->returnError('You are not authorized to access this information.');
     }
 
+    // it is used only for notes
     public function destroyData($dataId, $model, $tableName)
     {
         $validator = Validator::make(['id' => $dataId], [
@@ -78,10 +79,15 @@ trait GeneralTrait
             return $this->returnError($validator->errors());
         }
 
-        $data = $model::find($dataId);
-        $data->delete();
-
         $modelName = $this->getModelName($model);
+
+        $data = $model::where('patient_id', Auth()->user()->id)->find($dataId);
+        
+        if (!$data) {
+            return $this->returnError("$modelName not found.");
+        }
+
+        $data->delete();
         return $this->returnSuccess("$modelName deleted successfully.");
     }
 
