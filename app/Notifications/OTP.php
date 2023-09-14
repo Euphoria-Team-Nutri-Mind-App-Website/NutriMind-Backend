@@ -36,7 +36,7 @@ class OTP extends Notification
     {
         return (new MailMessage)
             ->subject('Restore password verification code')
-            ->line('Your verification code id'.$notifiable->verfication_code);
+            ->line('Your verification code is'.$notifiable->verfication_code);
     }
 
     /**
