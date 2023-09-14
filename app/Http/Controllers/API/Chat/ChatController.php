@@ -35,7 +35,7 @@ class ChatController extends Controller
         $chat_messages = Message::all()->where('receiver_name',$request->receiver_name);
         return response([
             'status' => true,
-            $chat_messages
+            'message'=> $chat_messages
         ]);
     }
 
@@ -45,7 +45,7 @@ class ChatController extends Controller
         $chat = Chat::all()->where('sender_name',Auth::user()->name);
         return response([
             'status' => true,
-            $chat
+            'chat'=>$chat
         ]);
     }
 
@@ -58,7 +58,7 @@ class ChatController extends Controller
             ->get();
         return response([
             'status' => true,
-            $chat
+            'chat'=>$chat
         ]);
     }
 
