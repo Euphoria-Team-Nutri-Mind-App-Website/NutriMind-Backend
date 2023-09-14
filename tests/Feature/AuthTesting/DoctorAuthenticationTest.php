@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\AuthTesting;
 
 use Tests\TestCase;
 use App\Models\Doctor;
@@ -22,12 +22,22 @@ class DoctorAuthenticationTest extends TestCase
             'experience_years' => fake()->randomElement([1,2,3,4,5]),
             'price' => fake()->randomElement([100,250,300,240,255]),
             'credit_card_number' => fake()->phoneNumber(),
-            'vodafone_cash' => fake()->phoneNumber(),
+            'vodafone_cash' => '01' . random_int(0, 9) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
         ]);
 
         $response->assertStatus(200);
     }
 
+    public function testDoctorSetWorkTime(): void
+    {
+        $doctor = Doctor::factory()->create();
+        $response = $this->withoutMiddleware()->actingAs($doctor)->post('doctor/api/doctor/work-days', [
+        'work_days' => ['saturday', 'sunday','monday','tuesday','wednesday','thursday'],
+        'from_to' => 'From 2pm to 9pm',
+        ]);
+
+        $response->assertStatus(200);
+    }
 
     public function testDoctorLoginSuccess(){
         $doctor = Doctor::factory()->create();
@@ -39,7 +49,6 @@ class DoctorAuthenticationTest extends TestCase
 
         $response->assertStatus(200);
     }
-
 
     public function testDoctorGetOtpSuccess(){
         $email = 'dallas.breitenberg@example.org';
@@ -70,5 +79,52 @@ class DoctorAuthenticationTest extends TestCase
         } else {
             $this->fail("Your verification code is incorrect");
         }
+    }
+
+    public function testDoctorResetPasswordSuccess(){
+        $email = 'hodkiewicz.jaden@example.org';
+        $doctor = Doctor::where('email', $email)->first();
+
+        if ($doctor) {
+            $response = $this->actingAs($doctor, 'doctor')->post("/doctor/api/doctor/reset-password", [
+                'email' => $email,
+                'password' => 'hebaasker2124538',
+                'password_confirmation' => 'hebaasker2124538',
+            ]);
+
+            $response->assertStatus(200);
+            $response->assertJson([
+                'status' => true,
+                'message' => 'Your password has been changed',
+            ]);
+        }
+    }
+
+    public function testDoctorUpdateProfileSuccess(){
+        // Create a doctor and login
+        $doctor = Doctor::factory()->create();
+        $accessToken = $doctor->createToken('Test Token')->accessToken;
+
+        // Update the doctor's profile
+        $response = $this->actingAs($doctor, 'doctor')->post('/doctor/api/doctor/update-profile', [
+            'name' => 'New Name',
+            'email' => 'newemail@example.com',
+            'password' => 'password',
+        ]);
+        $response->assertStatus(200);
+    }
+
+    public function testDoctorLogoutSuccess(){
+        // Create a doctor and login
+        $doctor = Doctor::factory()->create();
+        $accessToken = $doctor->createToken('Test Token')->accessToken;
+
+        $response = $this->actingAs($doctor, 'doctor')->get('/doctor/api/doctor/logout');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => true,
+            'message' => 'Logged out successfully',
+        ]);
     }
 }

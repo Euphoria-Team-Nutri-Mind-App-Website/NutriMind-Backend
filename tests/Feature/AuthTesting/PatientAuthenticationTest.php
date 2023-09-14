@@ -1,12 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\AuthTesting;
 
 use Tests\TestCase;
 use App\Models\Patient;
 use App\Notifications\OTP;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PatientAuthenticationTest extends TestCase
 {
@@ -43,7 +41,7 @@ class PatientAuthenticationTest extends TestCase
 
 
     public function testPatientGetOtpSuccess(){
-        $email = 'xkris@example.org';
+        $email = 'ystroman@example.net';
         if($patient = Patient::where('email', $email)->first())
         {
             $response = $this->get('/patient/api/patient/generate-otp',[
@@ -61,15 +59,63 @@ class PatientAuthenticationTest extends TestCase
     }
 
     public function testPatientVerifyOtpSuccess(){
-        $email = 'jenkins.hoyt@example.net';
+        $email = 'ystroman@example.net';
         $patient = Patient::where('email', $email)->first();
 
         if ($patient) {
-            $response = $this->get("/patient/api/patient/verify-otp?email=$email&verfication_code=5592");
+            $response = $this->get("/patient/api/patient/verify-otp?email=$email&verfication_code=2348");
             $response->assertStatus(200);
             $response->assertSee('Correct verification code');
         } else {
             $this->fail("Your verification code is incorrect");
         }
+    }
+
+    public function testpatientResetPasswordSuccess(){
+        $email = 'ystroman@example.net';
+        $patient = Patient::where('email', $email)->first();
+
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/reset-password", [
+                'email' => $email,
+                'password' => 'hebaasker2124538',
+                'password_confirmation' => 'hebaasker2124538',
+            ]);
+
+            $response->assertStatus(200);
+            $response->assertJson([
+                'status' => true,
+                'message' => 'Your password has been changed',
+            ]);
+        }
+    }
+
+    public function testPatientUpdateProfileSuccess()
+    {
+        // Create a patient and login
+        $patient = Patient::factory()->create();
+        $accessToken = $patient->createToken('Test Token')->accessToken;
+
+        // Update the patient's profile
+        $response = $this->actingAs($patient, 'patient')->post('/patient/api/patient/update-profile', [
+            'name' => 'New Name',
+            'email' => 'newemail@example.com',
+            'password' => 'password',
+        ]);
+        $response->assertStatus(200);
+    }
+
+    public function testPatientLogoutSuccess(){
+        // Create a patient and login
+        $patient = Patient::factory()->create();
+        $accessToken = $patient->createToken('Test Token')->accessToken;
+
+        $response = $this->actingAs($patient, 'patient')->get('/patient/api/patient/logout');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => true,
+            'message' => 'Logged out successfully',
+        ]);
     }
 }

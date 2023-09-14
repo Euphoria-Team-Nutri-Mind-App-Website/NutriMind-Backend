@@ -18,15 +18,16 @@ class DoctorFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password'=>'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'image' => fake()->image,
             'gender' => fake()->randomElement(['male', 'female']),
             'qualification' => fake()->sentence(10),
             'national_id' => fake()->phoneNumber(),
             'experience_years' => fake()->randomElement([1,2,3,4,5]),
+            'image' => fake()->image,
             'rate' => fake()->randomElement([1,2,3,4,5]),
             'price' => fake()->randomElement([100,250,300,240,255]),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'credit_card_number' => fake()->phoneNumber(),
+            'vodafone_cash' => fake()->phoneNumber(),
         ];
     }
 }

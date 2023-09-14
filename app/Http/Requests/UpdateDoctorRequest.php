@@ -22,10 +22,9 @@ class UpdateDoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' =>'required|max:255',
-            'email' => 'required|unique:doctors|email',
-            'image' => 'nullable',
-            'password' =>'required|min:8',
+            'name' =>'max:255',
+            'email' => 'unique:doctors|email',
+            'password' =>'min:8',
         ];
     }
 }

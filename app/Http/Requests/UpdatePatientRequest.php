@@ -22,10 +22,9 @@ class UpdatePatientRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' =>'required|max:255',
-            'email' => 'required|unique:patients|email',
-            'image' => 'nullable',
-            'password' =>'required|min:8',
+            'name' =>'max:255',
+            'email' => 'unique:patients|email',
+            'password' =>'min:8',
         ];
     }
 }
