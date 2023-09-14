@@ -22,6 +22,8 @@ class PatientAuthenticationTest extends TestCase
             'gender' => fake()->randomElement(['male', 'female']),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'calories' => fake()->randomElement([2006,1592,2173,2687,1255]),
+            'credit_card_number' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
+            'vodafone_cash' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
         ]);
 
         $response->assertStatus(200);
