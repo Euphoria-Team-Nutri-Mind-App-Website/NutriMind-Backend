@@ -49,6 +49,7 @@ class ReportController extends Controller
             ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->orderByDesc('date')
             ->where('appointments.id', $appointmentId)
+            ->where('appointments.doctor_id', Auth()->user()->id)
             ->first([
                 'full_name',
                 'age',

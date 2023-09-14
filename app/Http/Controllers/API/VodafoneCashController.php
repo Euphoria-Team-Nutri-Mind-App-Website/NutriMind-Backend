@@ -70,9 +70,11 @@ class VodafoneCashController extends Controller
             return $validatedMessage;
         }
 
-        Appointment::where('id', $appointmentId)->update([
-            'status' => 'Active',
-        ]);
+        Appointment::where('id', $appointmentId)
+            ->where('doctor_id', Auth()->user()->id)
+            ->update([
+                'status' => 'Active',
+            ]);
 
         return $this->returnSuccess('Appointment activated successfully.');
     }
@@ -85,14 +87,17 @@ class VodafoneCashController extends Controller
             return $validatedMessage;
         }
 
-        Appointment::where('id', $appointmentId)->update([
-            'status' => 'Failed',
-        ]);
+        Appointment::where('id', $appointmentId)
+            ->where('doctor_id', Auth()->user()->id)
+            ->update([
+                'status' => 'Failed',
+            ]);
 
         DoctorSetTime::join('appointments', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
-            ->where('appointments.id', $appointmentId)->update([
-                    'doctor_set_times.status' => 'not set',
-                ]);
+            ->where('appointments.id', $appointmentId)
+            ->update([
+                'doctor_set_times.status' => 'not set',
+            ]);
 
         return $this->returnSuccess('Appointment rejected successfully.');
     }

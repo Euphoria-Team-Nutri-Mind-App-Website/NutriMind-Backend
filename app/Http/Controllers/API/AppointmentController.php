@@ -11,6 +11,7 @@ use App\Models\Patient;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
@@ -159,6 +160,7 @@ class AppointmentController extends Controller
             ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->where('patients.id', $request->patient_id)
             ->where('appointments.id', '<>', $request->appointment_id)
+            ->where('appointments.doctor_id', Auth()->user()->id)
             ->orderByDesc('date')
             ->first([
                 'full_name',
