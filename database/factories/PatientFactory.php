@@ -17,7 +17,7 @@ class PatientFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'image' => 'public/images/profileImages/profile.png',
+            'image' => 'https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg',
             'password'=>'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'height' => fake()->randomElement([178,167,150,134,195]),
             'first_weight' => fake()->randomElement([78,67,50,34,95]),
