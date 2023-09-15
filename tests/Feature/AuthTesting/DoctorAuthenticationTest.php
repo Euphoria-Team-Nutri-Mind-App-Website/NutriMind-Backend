@@ -21,8 +21,8 @@ class DoctorAuthenticationTest extends TestCase
             'national_id' => fake()->phoneNumber(),
             'experience_years' => fake()->randomElement([1,2,3,4,5]),
             'price' => fake()->randomElement([100,250,300,240,255]),
-            'credit_card_number' => fake()->phoneNumber(),
-            'vodafone_cash' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT)
+            'credit_card_number' => fake()->creditCardNumber(),
+            'vodafone_cash' => '01' . fake()->randomElement(['0', '1', '2', '5']) . fake()->numberBetween(10000000, 99999999),
         ]);
 
         $response->assertStatus(200);

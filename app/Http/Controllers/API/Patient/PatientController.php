@@ -64,15 +64,21 @@ class PatientController extends Controller
         return $this->caloriesRepository->recommendedCalories();
     }
 
-    //track patient weight
-    public function trackWeight(Request $request){
-        $patient = Patient::find(Auth::user()->id);
-        $first_weight = $patient->first_weight;
-        $current_weight = $request->input('current_weight');
-        $calories = $patient->calories;
 
+    // update patient weight
+    public function updateWeight(Request $request){
+        $patient = Patient::find(Auth::user()->id);
+        $current_weight = $request->input('current_weight');
         $patient->current_weight = $current_weight;
         $patient->save();
+    }
+
+    //track patient weight
+    public function trackWeight(){
+        $patient = Patient::find(Auth::user()->id);
+        $first_weight = $patient->first_weight;
+        $current_weight = $patient->current_weight;
+        $calories = $patient->calories;
 
         if($first_weight>$current_weight){
             $lost_weight = $first_weight - $current_weight;

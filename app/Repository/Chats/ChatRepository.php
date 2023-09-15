@@ -25,7 +25,9 @@ class ChatRepository implements ChatRepositoryInterface
                 'status' => null,
             ]);
 
-            return $message;
+            return response([
+                'message'=>$message,
+            ]);
 
 
         }else{
@@ -46,7 +48,9 @@ class ChatRepository implements ChatRepositoryInterface
 
             //broadcast(new SendMessage($chat))->toOthers();
 
-            return $message;
+            return response([
+                'message'=>$message,
+            ]);
         }
 
 
