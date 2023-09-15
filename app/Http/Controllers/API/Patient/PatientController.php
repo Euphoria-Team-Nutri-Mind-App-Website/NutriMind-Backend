@@ -89,10 +89,15 @@ class PatientController extends Controller
 
         return response([
             'status' => true,
-            'first_weight' => $first_weight .' '. 'Kg',
-            'current_weight' => $current_weight .' ' . 'Kg',
-            'change in weight' => $lost_weight .' '. 'Kg',
-            'your calories' => $calories .' ' .'calorie',
+            'weight_information' =>
+            [
+                [
+                'first_weight' => $first_weight .' '. 'Kg',
+                'current_weight' => $current_weight .' ' . 'Kg',
+                'change in weight' => $lost_weight .' '. 'Kg',
+                'your calories' => $calories .' ' .'calorie',
+                ]
+            ]
         ]);
     }
 }
