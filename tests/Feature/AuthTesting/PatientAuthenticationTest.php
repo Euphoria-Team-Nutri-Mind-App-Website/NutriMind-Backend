@@ -5,10 +5,11 @@ namespace Tests\Feature\AuthTesting;
 use Tests\TestCase;
 use App\Models\Patient;
 use App\Notifications\OTP;
+use Illuminate\Support\Facades\Auth;
 
 class PatientAuthenticationTest extends TestCase
 {
-    public function testPatientRegistration(): void
+    public function testPatientRegistrationSuccess(): void
     {
         $response = $this->post('/patient/api/patient/register', [
             'name' => fake()->name(),
@@ -22,11 +23,46 @@ class PatientAuthenticationTest extends TestCase
             'gender' => fake()->randomElement(['male', 'female']),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),
             'calories' => fake()->randomElement([2006,1592,2173,2687,1255]),
-            'credit_card_number' => fake()->phoneNumber(),
-            'vodafone_cash' => '01' . random_int(0, 4) . str_pad(random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
+            'credit_card_number' => fake()->creditCardNumber(),
+            'vodafone_cash' => '01' . fake()->randomElement(['0', '1', '2', '5']) . fake()->numberBetween(10000000, 99999999),
         ]);
 
         $response->assertStatus(200);
+    }
+    public function testPatientGetWeightSuccess(): void
+    {
+        $patient = Patient::find(1);
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/weight", [
+                'first_weight' => '75',
+            ]);
+
+            $response->assertStatus(200);
+        }
+    }
+
+    public function testPatientGetHeightSuccess(): void
+    {
+        $patient = Patient::find(1);
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/height", [
+                'height' => '175',
+            ]);
+
+            $response->assertStatus(200);
+        }
+    }
+
+    public function testPatientGetActiveStatusSuccess(): void
+    {
+        $patient = Patient::find(1);
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/active-status", [
+                'active_status' => 'Slack',
+            ]);
+
+            $response->assertStatus(200);
+        }
     }
 
 

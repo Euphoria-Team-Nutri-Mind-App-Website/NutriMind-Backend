@@ -32,20 +32,20 @@ class ChatController extends Controller
 
     //show all messages in the chat
     public function showMessages(Request $request){
-        $chat_messages = Message::all()->where('receiver_name',$request->receiver_name);
+        $chat_messages = Message::where('receiver_name', $request->receiver_name)->get();
         return response([
             'status' => true,
-            'message'=> $chat_messages
+            'message' => $chat_messages
         ]);
     }
 
 
     //show all chats user have
     public function showChats(){
-        $chat = Chat::all()->where('sender_name',Auth::user()->name);
+        $chats = Chat::where('sender_name', Auth::user()->name)->get();
         return response([
             'status' => true,
-            'chat'=>$chat
+            'chat'=>$chats
         ]);
     }
 
