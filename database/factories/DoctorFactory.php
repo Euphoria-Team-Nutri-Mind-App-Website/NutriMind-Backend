@@ -22,7 +22,7 @@ class DoctorFactory extends Factory
             'qualification' => fake()->sentence(10),
             'national_id' => fake()->phoneNumber(),
             'experience_years' => fake()->randomElement([1,2,3,4,5]),
-            'image' => fake()->image,
+            'image' => 'public/images/profileImages/profile.png',
             'rate' => fake()->randomElement([1,2,3,4,5]),
             'price' => fake()->randomElement([100,250,300,240,255]),
             'verfication_code' => fake()->randomElement([1025,5592,2173,4687,4255]),

@@ -33,8 +33,32 @@ class PatientAuthenticationTest extends TestCase
     {
         $patient = Patient::find(1);
         if ($patient) {
-            $response = $this->actingAs($patient, 'patient')->post("/api/update-weight", [
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/weight", [
                 'first_weight' => '75',
+            ]);
+
+            $response->assertStatus(200);
+        }
+    }
+
+    public function testPatientGetHeightSuccess(): void
+    {
+        $patient = Patient::find(1);
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/height", [
+                'height' => '175',
+            ]);
+
+            $response->assertStatus(200);
+        }
+    }
+
+    public function testPatientGetActiveStatusSuccess(): void
+    {
+        $patient = Patient::find(1);
+        if ($patient) {
+            $response = $this->actingAs($patient, 'patient')->post("/patient/api/patient/active-status", [
+                'active_status' => 'Slack',
             ]);
 
             $response->assertStatus(200);
