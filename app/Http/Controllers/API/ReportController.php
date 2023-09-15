@@ -71,6 +71,7 @@ class ReportController extends Controller
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
             ->join('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->orderByDesc('date')
+            ->orderByDesc('time')
             ->where('patients.id', Auth()->user()->id)
             ->first([
                 'full_name',

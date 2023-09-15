@@ -13,7 +13,7 @@ class NoteFactory extends Factory
     public function definition()
     {
         return [
-            'body' => $this->faker->paragraph,
+            'body' => fake()->paragraph,
             'patient_id' => function () {
                 return Auth()->user()->id;
             }
