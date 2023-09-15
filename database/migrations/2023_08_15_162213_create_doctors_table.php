@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('credit_card_number')->nullable();
             $table->string('vodafone_cash')->nullable();
             $table->enum('gender',['male','female'])->default('male');
-            $table->string('image')->default('profile.png');
+            $table->string('image')->default('https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg');
             $table->string('qualification');
             $table->integer('experience_years');
             $table->integer('price');

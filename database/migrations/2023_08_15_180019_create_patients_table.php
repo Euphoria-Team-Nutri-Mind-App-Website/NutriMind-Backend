@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('image')->default('profile.png');
+            $table->string('image')->default('https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg');
             $table->enum('gender',['male','female'])->default('male');
             $table->integer('age');
             $table->integer('height')->nullable();
