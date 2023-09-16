@@ -2,6 +2,7 @@
 namespace App\Repository\Chats;
 
 use App\Models\Chat;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Interfaces\Chats\ChatRepositoryInterface;
@@ -17,8 +18,16 @@ class ChatRepository implements ChatRepositoryInterface
 
         // Check if chat already exists
         if ($chat_id) {
+            $user_name = Auth::user()->name;
+
+            $chat_messages = Message::where(function ($query) use ($user_name) {
+                $query->where('receiver_name', $user_name)
+                    ->orWhere('sender_name', $user_name);
+            })->get();
+
             return response([
-                'message' => '$message',
+                'status' => true,
+                'message' => $chat_messages
             ]);
         } else {
             $chat = Chat::create([
@@ -27,8 +36,6 @@ class ChatRepository implements ChatRepositoryInterface
                 'last_seen' => null,
             ]);
         }
-
-
 
     }
 }
