@@ -22,7 +22,7 @@ class CaloriesRepository implements CaloriesRepositoryInterface
             $activity_state = 1.2;
         } elseif ($active_status == 'Slack') {
             $activity_state = 1.375;
-        } elseif ($active_status == 'Active') {
+        } elseif ($active_status == 'Active sometimes') {
             $activity_state = 1.55;
         } else {
             $activity_state = 1.725;
