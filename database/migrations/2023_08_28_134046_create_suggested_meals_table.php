@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('details');
-            $table->integer('calories');
-            $table->integer('protein');
-            $table->integer('fats');
-            $table->integer('carbs');
+            $table->double('calories');
+            $table->double('protein');
+            $table->double('fats');
+            $table->double('carbs');
             $table->string('image');
             $table->timestamps();
         });

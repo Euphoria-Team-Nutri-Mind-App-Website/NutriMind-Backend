@@ -23,7 +23,7 @@ class SuggestedMealFactory extends Factory
             'protein' => fake()->numberBetween(5, 50),
             'fats' => fake()->numberBetween(5, 50),
             'carbs' => fake()->numberBetween(5, 50),
-            'image' => fake()->imageUrl(),
+            'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMG8UVOrvycr3x-k-qwQggPZMHK_aw4hEi2A&usqp=CAU',
         ];
     }
 }
