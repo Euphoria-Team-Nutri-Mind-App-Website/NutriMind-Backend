@@ -2,6 +2,7 @@
 namespace App\Repository\Chats;
 
 use App\Models\Chat;
+use App\Models\Doctor;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,11 +10,11 @@ use App\Interfaces\Chats\ChatRepositoryInterface;
 
 class ChatRepository implements ChatRepositoryInterface
 {
-    public function create(Request $request){
+    public function create($id){
 
-        $receiver_name = $request->receiver_name;
+        //$receiver_name = $request->receiver_name;
         $sender_name = Auth::user()->name;
-
+        $receiver_name = Doctor::where('id',$id)->findOrFail('name');
         $chat_id = Chat::where('receiver_name', $receiver_name)->where('sender_name',$sender_name)->first();
 
         // Check if chat already exists
@@ -36,6 +37,5 @@ class ChatRepository implements ChatRepositoryInterface
                 'last_seen' => null,
             ]);
         }
-
     }
 }

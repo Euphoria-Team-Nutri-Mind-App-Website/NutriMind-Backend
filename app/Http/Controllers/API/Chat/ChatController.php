@@ -20,9 +20,9 @@ class ChatController extends Controller
     }
 
     //start new chat method
-    public function create(Request $request)
+    public function create($id)
     {
-        return $this->chatRepository->create($request);
+        return $this->chatRepository->create($id);
     }
 
     public function sendMessage(Request $request){

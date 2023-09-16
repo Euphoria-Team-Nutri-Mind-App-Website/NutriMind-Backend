@@ -9,6 +9,6 @@ interface ChatRepositoryInterface
 {
 
     // Create new chat method
-    public function create(Request $request);
+    public function create( $id);
 
 }

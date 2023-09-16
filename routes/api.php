@@ -12,7 +12,7 @@ use App\Http\Controllers\HelpSupportController;
 
 //--------------------------Routes for Chat between doctor and patient--------------------------//
 Route::middleware('auth:patient,doctor')->group(function () {
-    Route::post('/create-chat', [ChatController::class, 'create']);
+    Route::post('/create-chat/{id}', [ChatController::class, 'create']);
     Route::post('/send-message', [ChatController::class, 'sendMessage']);
     Route::get('/show-chat-messages', [ChatController::class, 'showMessages']);
     Route::get('/show-chats', [ChatController::class, 'showChats']);
