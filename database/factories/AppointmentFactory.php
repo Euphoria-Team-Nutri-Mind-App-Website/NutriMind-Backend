@@ -28,7 +28,7 @@ class AppointmentFactory extends Factory
             'patient_id' => function () {
                 return Patient::factory()->create()->id;
             },
-            'payment_method' => 'Vodafone Cash',
+            'payment_method' => 'vodafone_cash',
             'vodafone_cash_id' => function () {
                 return VodafoneCash::factory()->create()->id;
             },

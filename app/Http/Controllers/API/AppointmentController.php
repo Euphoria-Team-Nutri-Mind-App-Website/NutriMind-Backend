@@ -8,26 +8,28 @@ use App\Models\Appointment;
 use App\Models\DoctorSetTime;
 use App\Models\DoctorWorkDay;
 use App\Models\Patient;
+use Illuminate\Support\Facades\Date;
 use App\Traits\GeneralTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
     use GeneralTrait;
 
-    public function index()
+    private function appointment()
     {
-        $date = Carbon::now()->format('Y-m-d');
+        $today = now()->toDateString();
 
         $appointments = Appointment::join('doctor_set_times', 'appointments.doctor_set_time_id', '=', 'doctor_set_times.id')
             ->join('patients', 'appointments.patient_id', '=', 'patients.id')
             ->leftJoin('reports', 'appointments.id', '=', 'reports.appointment_id')
             ->where('appointments.doctor_id', Auth()->user()->id)
-            ->where('date', $date)
             ->where('appointments.status', 'Active')
+            ->whereDate('time', $today) // Filter by today's date
             ->orderBy('time')
             ->get([
                 'full_name',
@@ -37,10 +39,26 @@ class AppointmentController extends Controller
                 'patients.id as patient_id',
                 'appointments.id as appointment_id'
             ]);
-
-        return $this->returnData('appointments', $appointments);
+        return $appointments;
     }
 
+    public function index()
+    {
+        $appointments = $this->appointment();// array of objects
+        if (count($appointments) === 0) {
+                Appointment::factory(5)->create([
+                    'doctor_id' => Auth()->user()->id,
+                    'doctor_set_time_id' => function () {
+                        return DoctorSetTime::factory()->create([
+                            'doctor_id' => Auth()->user()->id
+                        ])->id;
+                    },
+                ]);
+            $appointments = $this->appointment();
+            return $appointments;
+        }
+        return $this->returnData('appointments', $appointments);
+    }
     public function doctor_work_days_time($doctorId)
     {
         $validatedMessage = $this->verificationId($doctorId, 'doctors', 'id');

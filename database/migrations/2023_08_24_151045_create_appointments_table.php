@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('doctor_id')->constrained()->cascadeOnDelete();
             $table->foreignId('doctor_set_time_id')->constrained()->cascadeOnDelete();
             $table->foreignId('patient_id')->constrained()->cascadeOnDelete();
-            $table->string('payment_method');
+            $table->enum('payment_method',['vodafone_cash','stripe']);
             $table->foreignId('vodafone_cash_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('stripe_id')->nullable()->constrained()->cascadeOnDelete();
             $table->enum('status', ['Active', 'Pending', 'Failed'])->default('Pending');

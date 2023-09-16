@@ -14,7 +14,7 @@ class DoctorWorkDaySeeder extends Seeder
      */
     public function run()
     {
-        DoctorWorkDay::factory()->count(12)->create();
+        DoctorWorkDay::factory()->count(1)->create();
 
     }
 }

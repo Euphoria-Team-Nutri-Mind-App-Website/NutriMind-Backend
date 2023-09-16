@@ -34,7 +34,8 @@ class DatabaseSeeder extends Seeder
             VodafoneCashSeeder::class,
             DoctorSetTimeSeeder::class,
             AppointmentSeeder::class,
-            ReportSeeder::class
+            ReportSeeder::class,
+            SuggestedMealSeeder::class
         ]);
     }
 }
