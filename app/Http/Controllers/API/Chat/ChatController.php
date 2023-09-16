@@ -7,10 +7,7 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\MessageRequest;
-use Illuminate\Support\Facades\Notification;
 use App\Interfaces\Chats\ChatRepositoryInterface;
-use App\Notifications\NewMessage;
 
 class ChatController extends Controller
 {
@@ -23,15 +20,33 @@ class ChatController extends Controller
     }
 
     //start new chat method
-    public function create(MessageRequest $request)
+    public function create(Request $request)
     {
         return $this->chatRepository->create($request);
+    }
+
+    public function sendMessage(Request $request){
+        $receiver_name = $request->receiver_name;
+        $sender_name = Auth::user()->name;
+        $chat_id = Chat::where('receiver_name', $receiver_name)->where('sender_name',$sender_name)->first();
+
+        $message = Message::create([
+            'chat_id' => $chat_id->id,
+            'sender_name' => $sender_name,
+            'receiver_name' => $receiver_name,
+            'content' => $request->content,
+            'status' => null,
+        ]);
+
+        return response([
+            'message' => $message
+        ]);
     }
 
 
 
     //show all messages in the chat
-    public function showMessages(Request $request){
+    public function showMessages(){
         $user_name = Auth::user()->name;
 
         $chat_messages = Message::where(function ($query) use ($user_name) {
